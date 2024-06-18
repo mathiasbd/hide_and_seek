@@ -11,10 +11,12 @@ class _MapsPageState extends State<MapsPage> {
   final locationController = Location();
 
   LatLng? currentPos;
+  BitmapDescriptor currentPosIcon = BitmapDescriptor.defaultMarker;
 
   @override
   void initState() {
     super.initState();
+    setCustomMarkerIcon();
     WidgetsBinding.instance
         .addPostFrameCallback((_) async => await getUserLocation());
   }
@@ -50,11 +52,21 @@ class _MapsPageState extends State<MapsPage> {
     });
   }
 
+  void setCustomMarkerIcon() {
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration.empty, "assets/CurrentLocation.png")
+        .then(
+      (icon) {
+        currentPosIcon = icon;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Maps'),
+          title: const Text('Maps'),
         ),
         body: currentPos == null
             ? const Center(child: CircularProgressIndicator())
@@ -64,7 +76,7 @@ class _MapsPageState extends State<MapsPage> {
                 markers: {
                     Marker(
                         markerId: const MarkerId('Current position'),
-                        icon: BitmapDescriptor.defaultMarker,
+                        icon: currentPosIcon,
                         position: currentPos!)
                   }));
   }

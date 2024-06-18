@@ -5,7 +5,6 @@ import 'package:hide_and_seek/pages/hider_page.dart';
 import 'package:provider/provider.dart';
 
 class Lobby extends StatelessWidget {
-
   final String rights;
   final String matchName;
 
@@ -14,7 +13,8 @@ class Lobby extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController _firestoreController = FirestoreController(instance: firestore);
+    FirestoreController _firestoreController =
+        FirestoreController(instance: firestore);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,17 +33,20 @@ class Lobby extends StatelessWidget {
         children: [
           Expanded(
             child: StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance.collection('matches').doc(matchName).snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('matches')
+                  .doc(matchName)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: const CircularProgressIndicator());
                 }
 
                 var matchData = snapshot.data!.data() as Map<String, dynamic>;
                 var participants = matchData['participants'] ?? [];
 
                 if (participants.isEmpty) {
-                  return Center(child: Text('No participants found'));
+                  return const Center(child: Text('No participants found'));
                 }
 
                 return ListView.builder(
@@ -63,7 +66,7 @@ class Lobby extends StatelessWidget {
               height: 100.0,
               child: ElevatedButton(
                 onPressed: () {
-                  if(rights=='Admin') {
+                  if (rights == 'Admin') {
                     print('succes');
                     Navigator.push(
                       context,
@@ -76,7 +79,7 @@ class Lobby extends StatelessWidget {
                 ),
                 child: Text(
                   getButtonText(),
-                  style: TextStyle(fontSize: 24.0, color: Colors.black),
+                  style: const TextStyle(fontSize: 24.0, color: Colors.black),
                 ),
               ),
             ),
@@ -88,9 +91,10 @@ class Lobby extends StatelessWidget {
 
   String getButtonText() {
     String buttonText = 'Ready';
-    if (rights=='Admin') {
+    if (rights == 'Admin') {
       buttonText = 'Start game';
-    };
+    }
+    ;
     return buttonText;
   }
 }

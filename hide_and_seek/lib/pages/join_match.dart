@@ -9,16 +9,15 @@ import '../classes/User.dart';
 import 'lobby.dart';
 
 class JoinMatch extends StatelessWidget {
-
   final String name;
 
   JoinMatch({this.name = 'Unnamed'});
 
-
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController _firestoreController = FirestoreController(instance: firestore);
+    FirestoreController _firestoreController =
+        FirestoreController(instance: firestore);
     final TextEditingController myController = TextEditingController();
 
     return Scaffold(
@@ -37,7 +36,7 @@ class JoinMatch extends StatelessWidget {
         stream: FirebaseFirestore.instance.collection('matches').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           var matches = snapshot.data!.docs;
@@ -50,23 +49,26 @@ class JoinMatch extends StatelessWidget {
               String matchName = matchData['Match Name'] ?? 'Unknown Match';
 
               return Container(
-                margin: EdgeInsets.all(10.0),
+                margin: const EdgeInsets.all(10.0),
                 child: ElevatedButton(
                   onPressed: () {
                     _firestoreController.joinMatch(matchName, name);
-                    if(!matchName.isEmpty) {
+                    if (!matchName.isEmpty) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Lobby(matchName: matchName,)),
+                        MaterialPageRoute(
+                            builder: (context) => Lobby(
+                                  matchName: matchName,
+                                )),
                       );
                     }
                   },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[400],
-                ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[400],
+                  ),
                   child: Text(
                     matchName,
-                    style: TextStyle(fontSize: 18.0, color: Colors.black),
+                    style: const TextStyle(fontSize: 18.0, color: Colors.black),
                   ),
                 ),
               );

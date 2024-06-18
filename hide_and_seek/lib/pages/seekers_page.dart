@@ -8,7 +8,7 @@ class SeekersPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: myColors.fourthColor,
       appBar: AppBar(
-        title: Text('Seekers Page'),
+        title: const Text('Seekers Page'),
       ),
       body: Center(
         child: Column(
@@ -21,7 +21,7 @@ class SeekersPage extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              child: Text('Location'),
+              child: const Text('Location'),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -30,7 +30,7 @@ class SeekersPage extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              child: Text('kill'),
+              child: const Text('kill'),
               onPressed: () {
                 // Add your functionality here
               },

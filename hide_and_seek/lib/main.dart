@@ -13,7 +13,6 @@ import 'pages/home_screen.dart';
 import 'pages/join_match.dart';
 import 'pages/lobby.dart';
 
-
 void main() async {
   //Find ud af om det stateless eller andet
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,17 +27,15 @@ void main() async {
   runApp(
     Provider.value(
       value: FirebaseFirestore.instance,
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
-
 @override
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -52,9 +49,5 @@ class MyApp extends StatelessWidget {
         '/hider_page': (context) => HiderPage(),
       },
     );
-      
   }
 }
-
-
-
