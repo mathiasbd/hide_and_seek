@@ -15,10 +15,10 @@ class _MapsPageState extends State<MapsPage> {
 
   @override
   void initState() {
-    super.initState();
-    setCustomMarkerIcon();
     WidgetsBinding.instance
         .addPostFrameCallback((_) async => await getUserLocation());
+    super.initState();
+    setCustomMarkerIcon();
   }
 
   Future<void> getUserLocation() async {
