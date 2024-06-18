@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hide_and_seek/firestore_controller.dart';
-import 'package:hide_and_seek/hider_page.dart';
+import 'package:hide_and_seek/firebase/firestore_controller.dart';
+import 'package:hide_and_seek/pages/hider_page.dart';
 import 'package:provider/provider.dart';
 
 class Lobby extends StatelessWidget {
