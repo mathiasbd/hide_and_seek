@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "658225167023",
+    "project_id": "hide-and-seek-aca0f",
+    "storage_bucket": "hide-and-seek-aca0f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658225167023:android:c6ccc0ac78c9a5148bf25a",
+        "android_client_info": {
+          "package_name": "com.example.hide_and_seek"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtwCpMOD0HhXynnmADgpTAaEvpZ5_nfzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658225167023:android:4b23811d8eee89318bf25a",
+        "android_client_info": {
+          "package_name": "com.myapp.hideandseek"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtwCpMOD0HhXynnmADgpTAaEvpZ5_nfzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
