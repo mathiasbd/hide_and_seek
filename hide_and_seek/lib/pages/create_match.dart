@@ -9,7 +9,6 @@ import '../classes/User.dart';
 import 'lobby.dart';
 
 class CreateMatch extends StatelessWidget {
-
   final String name;
 
   CreateMatch({this.name = 'unnamed'});
@@ -17,25 +16,27 @@ class CreateMatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController _firestoreController = FirestoreController(instance: firestore);
+    FirestoreController _firestoreController =
+        FirestoreController(instance: firestore);
     final TextEditingController myController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Match'),
-        centerTitle: true,
-        titleTextStyle: const TextStyle(
-          fontSize: 32.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-          fontFamily: 'Oswald',
-        ),
-        backgroundColor: Colors.blue[400],
-      ),
-      body: Center(
-        child: Column(
+        backgroundColor: Color.fromARGB(255, 95, 188, 255), // Change this line
+        appBar: AppBar(
+            title: const Text('Create Match'),
+            centerTitle: true,
+            titleTextStyle: const TextStyle(
+              fontSize: 32.0,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontFamily: 'Oswald',
+            ),
+            backgroundColor: Colors.blue[400]),
+        body: Center(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            SizedBox(height: 0.0), // Added SizedBox for spacing
             Container(
               width: 200.0,
               height: 100.0,
@@ -46,25 +47,33 @@ class CreateMatch extends StatelessWidget {
                 ),
               ),
             ),
+            Container(
+              width: 150.0, // adjust the width as needed
+              height: 75.0, // adjust the height as needed
+              child: FloatingActionButton(
+                onPressed: () {
+                  String matchName = myController.text;
+                  createAndAdd(_firestoreController, matchName);
+                  myController.clear();
+                  if (matchName.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Lobby(rights: 'Admin', matchName: matchName)),
+                    );
+                  }
+                },
+                tooltip: 'Create Match',
+                child: const Text(
+                  'Create',
+                  style: TextStyle(color: Colors.white), // Add this line
+                ),
+                backgroundColor: Colors.black, // Change this line
+              ),
+            ),
           ],
-        )
-        
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Text('+'),
-        onPressed: () {
-          String matchName = myController.text;
-          createAndAdd(_firestoreController, matchName);
-          myController.clear();
-          if(!matchName.isEmpty) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Lobby(rights: 'Admin', matchName: matchName,)),
-            );
-          }
-        },
-      ),
-    );
+        )));
   }
 
   void createAndAdd(_firestoreController, matchName) async {

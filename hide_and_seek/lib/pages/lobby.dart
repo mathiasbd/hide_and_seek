@@ -17,6 +17,7 @@ class Lobby extends StatelessWidget {
         FirestoreController(instance: firestore);
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 95, 188, 255), // Change this line
       appBar: AppBar(
         title: const Text('Create Match'),
         centerTitle: true,
@@ -75,11 +76,13 @@ class Lobby extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[400],
+                  backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                 ),
                 child: Text(
                   getButtonText(),
-                  style: const TextStyle(fontSize: 24.0, color: Colors.black),
+                  style: const TextStyle(
+                      fontSize: 24.0,
+                      color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
             ),
