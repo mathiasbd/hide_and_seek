@@ -21,6 +21,7 @@ class JoinMatch extends StatelessWidget {
     final TextEditingController myController = TextEditingController();
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
         title: const Text('Join Match'),
         centerTitle: true,
@@ -64,11 +65,11 @@ class JoinMatch extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[400],
+                    backgroundColor: Colors.black,
                   ),
                   child: Text(
                     matchName,
-                    style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                    style: const TextStyle(fontSize: 18.0, color: Colors.white),
                   ),
                 ),
               );

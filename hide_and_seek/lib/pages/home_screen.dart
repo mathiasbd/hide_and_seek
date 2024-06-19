@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:hide_and_seek/pages/create_match.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:hide_and_seek/pages/join_match.dart';
+import 'package:hide_and_seek/pages/seekers_page.dart';
+import 'package:hide_and_seek/pages/game_finnish_page.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -69,7 +71,7 @@ class HomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateMatch(name: name)),
+                              builder: (context) => CreateMatch(name: name,)),
                         );
                       }
                     },
