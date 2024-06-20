@@ -30,4 +30,11 @@ class User {
   void printDetails() {
     print('Name: $name, ID: $id, Type: ${userType?.toString() ?? "None"}');
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 }

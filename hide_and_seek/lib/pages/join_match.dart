@@ -9,9 +9,9 @@ import '../classes/User.dart';
 import 'lobby.dart';
 
 class JoinMatch extends StatelessWidget {
-  final String name;
+  final User user;
 
-  JoinMatch({this.name = 'Unnamed'});
+  JoinMatch({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +53,13 @@ class JoinMatch extends StatelessWidget {
                 margin: const EdgeInsets.all(10.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    _firestoreController.joinMatch(matchName, name);
+                    _firestoreController.joinMatch(matchName, user.toMap());
                     if (!matchName.isEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => Lobby(
-                                  matchName: matchName,
+                                  matchName: matchName, user: user,
                                 )),
                       );
                     }

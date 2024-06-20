@@ -6,6 +6,7 @@ import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:hide_and_seek/pages/join_match.dart';
 import 'package:hide_and_seek/pages/seekers_page.dart';
 import 'package:hide_and_seek/pages/game_finnish_page.dart';
+import '../classes/User.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -67,11 +68,12 @@ class HomeScreen extends StatelessWidget {
                       print('Button 1 pressed');
                       String name = myController.text;
                       myController.clear();
+                      User user = new User(name);
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateMatch(name: name,)),
+                              builder: (context) => CreateMatch(user: user)),
                         );
                       }
                     },
@@ -94,11 +96,12 @@ class HomeScreen extends StatelessWidget {
                       print('Button 2 pressed');
                       String name = myController.text;
                       myController.clear();
+                      User user = new User(name);
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => JoinMatch(name: name)),
+                              builder: (context) => JoinMatch(user: user)),
                         );
                       }
                     },

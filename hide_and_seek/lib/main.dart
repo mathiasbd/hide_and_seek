@@ -43,11 +43,36 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
-        '/create_match': (context) => CreateMatch(),
-        '/join_match': (context) => JoinMatch(),
-        '/lobby': (context) => Lobby(),
         '/hider_page': (context) => HiderPage(),
       },
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case 'lobby':
+            final args = settings.arguments as Map<String, dynamic>;
+            final matchName = args['matchName'];
+            final user = args['user'] as User;
+
+            return MaterialPageRoute(
+              builder: (context) => Lobby(matchName: matchName, user: user),
+            );
+          case 'create_match':
+            final args = settings.arguments as Map<String, dynamic>;
+            final user = args['user'] as User;
+
+            return MaterialPageRoute(
+              builder: (context) => CreateMatch(user: user),
+            );
+          case 'join_match':
+            final args = settings.arguments as Map<String, dynamic>;
+            final user = args['user'] as User;
+
+            return MaterialPageRoute(
+              builder: (context) => JoinMatch(user: user),
+            );
+          default:
+            return null;
+        }
+      }
     );
   }
 }

@@ -16,11 +16,11 @@ class FirestoreController extends ChangeNotifier {
     });
   }
 
-  void joinMatch(matchName, name) {
+  void joinMatch(matchName, user) {
     instance.collection('matches').doc(matchName).update({
-      'participants': FieldValue.arrayUnion([name]),
+      'participants': FieldValue.arrayUnion([user]),
     }).then((_) {
-      print('$name added to $matchName');
+      print('$user added to $matchName');
     }).catchError((error) {
       print('Failed to add user to match: $error');
     });

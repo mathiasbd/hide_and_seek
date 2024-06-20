@@ -9,9 +9,9 @@ import '../classes/User.dart';
 import 'lobby.dart';
 
 class CreateMatch extends StatelessWidget {
-  final String name;
+  final User user;
 
-  CreateMatch({this.name = 'unnamed'});
+  CreateMatch({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class CreateMatch extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              Lobby(rights: 'Admin', matchName: matchName)),
+                              Lobby(rights: 'Admin', matchName: matchName, user: user)),
                     );
                   }
                 },
@@ -78,6 +78,6 @@ class CreateMatch extends StatelessWidget {
 
   void createAndAdd(_firestoreController, matchName) async {
     await _firestoreController?.createMatch(matchName);
-    await _firestoreController.joinMatch(matchName, name);
+    await _firestoreController.joinMatch(matchName, user.toMap());
   }
 }
