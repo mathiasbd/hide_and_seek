@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
     final TextEditingController myController = TextEditingController();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Container(
