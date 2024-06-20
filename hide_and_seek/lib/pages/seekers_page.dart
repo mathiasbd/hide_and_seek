@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hide_and_seek/pages/maps_page.dart';
 import '../classes/abillity.dart';
 
 class SeekerPage extends StatelessWidget {
@@ -23,12 +24,68 @@ class SeekerPage extends StatelessWidget {
         ),
         backgroundColor: Colors.blue[400],
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-          ],
-        ),
+      body: Flex(
+        direction: Axis.vertical,
+        children: <Flexible>[
+          Flexible(
+            flex: 1
+            ,
+            child: Container(color: Colors.blue[400]),
+          ),
+          Flexible(
+            flex: 10,
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Container(color: Colors.blue[400]),
+                ),
+                Flexible(
+                  flex: 7,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2,            
+                      ),
+                    ),
+                    child: MapsPage(),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Container(color: Colors.blue[400]),
+                ),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 3,
+            child: Container(
+              color: Colors.blue[400],
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.location_on, color: Colors.white),
+                      backgroundColor: Colors.black,
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(width: 20),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.volume_up, color: Colors.white),
+                      backgroundColor: Colors.black,
+                      shape: CircleBorder(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

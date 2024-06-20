@@ -11,80 +11,81 @@ class HiderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 95, 188, 255),
-        appBar: AppBar(
-          title: const Text('Hider'),
-          centerTitle: true,
-          titleTextStyle: const TextStyle(
-            fontSize: 32.0,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 0, 0, 0),
-            fontFamily: 'Oswald',
-          ),
-          backgroundColor: Colors.blue[400],
+      backgroundColor: const Color.fromARGB(255, 95, 188, 255),
+      appBar: AppBar(
+        title: const Text('Hider'),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontSize: 32.0,
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 0, 0, 0),
+          fontFamily: 'Oswald',
         ),
-        body: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MapsPage()),
-                          );
-                        },
-                        child: const Text(
-                          'Location',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
+        backgroundColor: Colors.blue[400],
+      ),
+      body: Flex(
+        direction: Axis.vertical,
+        children: <Flexible>[
+          Flexible(
+            flex: 1
+            ,
+            child: Container(color: Colors.blue[400]),
+          ),
+          Flexible(
+            flex: 10,
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Container(color: Colors.blue[400]),
+                ),
+                Flexible(
+                  flex: 7,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,  
+                        width: 2,            
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                        ),
-                        onPressed: () {
-                          // Add your code here
-                        },
-                        child: const Text(
-                          'meow',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                        ),
-                        onPressed: () {
-                          // Add your code here
-                        },
-                        child: const Text(
-                          'meowmeow',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
+                    child: MapsPage(),
                   ),
-                ],
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Container(color: Colors.blue[400]),
+                ),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 3,
+            child: Container(
+              color: Colors.blue[400],
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.location_on, color: Colors.white),
+                      backgroundColor: Colors.black,
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(width: 20),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.volume_up, color: Colors.white),
+                      backgroundColor: Colors.black,
+                      shape: CircleBorder(),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

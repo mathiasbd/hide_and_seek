@@ -69,9 +69,6 @@ class _MapsPageState extends State<MapsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Maps'),
-        ),
         body: currentPos == null
             ? const Center(child: CircularProgressIndicator())
             : GoogleMap(
