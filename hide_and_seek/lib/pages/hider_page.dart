@@ -62,24 +62,17 @@ class HiderPage extends StatelessWidget {
             flex: 3,
             child: Container(
               color: Colors.blue[400],
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.location_on, color: Colors.white),
-                      backgroundColor: Colors.black,
-                      shape: CircleBorder(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    'You are the hider! Find a good spot to hide! the seeker can use abilities to find you!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
                     ),
-                    SizedBox(width: 20),
-                    FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.volume_up, color: Colors.white),
-                      backgroundColor: Colors.black,
-                      shape: CircleBorder(),
-                    ),
-                  ],
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
