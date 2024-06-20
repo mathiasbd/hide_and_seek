@@ -1,9 +1,15 @@
 class Ability {
   String name;
 
+  
   Ability(this.name);
 
-  void use() {
-    print('Using $name ability!');
+  void getHiderLocations() {
+    print('Getting hider locations');
   }
+
+  void catchHider() {
+    print('Catching hider');
+  }
+
 }
