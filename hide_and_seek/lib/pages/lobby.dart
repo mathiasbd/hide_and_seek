@@ -13,21 +13,6 @@ class Lobby extends StatelessWidget {
   Lobby({this.rights = 'Standard', this.matchName = 'No Match', required this.user});
 
 
-  Future<bool?> _removeUserFromFirestore() async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('matches')
-          .doc(matchName)
-          .update({
-            'participants': FieldValue.arrayRemove([user.toMap()])
-          });
-      print('User removed from the Firestore');
-    } catch (e) {
-      print('Error removing user: $e');
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
@@ -36,7 +21,7 @@ class Lobby extends StatelessWidget {
     return PopScope(
       onPopInvoked: (bool didPop) async {
         if (didPop) {
-          await _removeUserFromFirestore();
+          await _firestoreController.removeUserFromMatch(matchName, user);
           return;
         }
       },
@@ -80,7 +65,17 @@ class Lobby extends StatelessWidget {
                     itemCount: participants.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text('Player: ${participants[index]}'),
+                        title: Row(
+                          children: [
+                            Text('Player: ${participants[index]}'),
+                            Container(
+                              margin: EdgeInsets.only(left: 20),
+                              width: 20,
+                              height: 20,
+                              color: getColor(),
+                            )
+                          ],
+                        ),
                       );
                     },
                   );
@@ -94,11 +89,13 @@ class Lobby extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (rights == 'Admin') {
-                      print('succes');
+                      print('Started game');
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => HiderPage()),
                       );
+                    } else {
+                      user.changeReady(matchName, user);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -126,5 +123,13 @@ class Lobby extends StatelessWidget {
     }
     ;
     return buttonText;
+  }
+
+  Color getColor() {
+    if(user.ready) {
+      return Colors.green;
+    } else {
+      return Colors.red;
+    }
   }
 }

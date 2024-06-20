@@ -68,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                       print('Button 1 pressed');
                       String name = myController.text;
                       myController.clear();
-                      User user = new User(name);
+                      User user = new User(name, context);
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
@@ -96,7 +96,7 @@ class HomeScreen extends StatelessWidget {
                       print('Button 2 pressed');
                       String name = myController.text;
                       myController.clear();
-                      User user = new User(name);
+                      User user = new User(name, context);
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
