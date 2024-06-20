@@ -63,6 +63,9 @@ class Lobby extends StatelessWidget {
                   var participantsReady = participants
                       .map((participant) => participant['ready'])
                       .toList();
+                  var participantsUserType = participants
+                      .map((participant) => participant['userType'])
+                      .toList();
 
                   if (matchStarted) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -90,7 +93,8 @@ class Lobby extends StatelessWidget {
                               width: 20,
                               height: 20,
                               decoration: BoxDecoration(
-                                color: getColor(participantsReady[index]),
+                                color: getColor(participantsReady[index],
+                                    participantsUserType[index]),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             )
@@ -159,8 +163,8 @@ class Lobby extends StatelessWidget {
     return user.userType == 'Admin' ? 'Start game' : 'Ready';
   }
 
-  Color getColor(bool participantsReady) {
-    if (user.userType != 'Admin') {
+  Color getColor(bool participantsReady, String participantUserType) {
+    if (participantUserType != 'Admin') {
       return participantsReady ? Colors.green : Colors.red;
     } else {
       return Colors.black;
