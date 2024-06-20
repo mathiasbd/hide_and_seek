@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import '../classes/User.dart';
 
 class MapsPage extends StatefulWidget {
+
+  final User user;
+
+  MapsPage({required this.user});
+
   @override
-  _MapsPageState createState() => _MapsPageState();
+  _MapsPageState createState() => _MapsPageState(user: user);
 }
 
 class _MapsPageState extends State<MapsPage> {
   final locationController = Location();
+  final User user;
+  _MapsPageState({required this.user});
 
   LatLng? currentPos;
   BitmapDescriptor currentPosIcon = BitmapDescriptor.defaultMarker;
@@ -46,6 +54,7 @@ class _MapsPageState extends State<MapsPage> {
         setState(() {
           currentPos =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
+              user.updateLocation(currentPos);
         });
         print(currentPos);
       }

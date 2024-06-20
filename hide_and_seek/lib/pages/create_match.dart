@@ -60,7 +60,7 @@ class CreateMatch extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              Lobby(rights: 'Admin', matchName: matchName, user: user)),
+                              Lobby(matchName: matchName, user: user)),
                     );
                   }
                 },

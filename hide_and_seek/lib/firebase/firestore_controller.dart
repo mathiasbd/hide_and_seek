@@ -42,6 +42,19 @@ class FirestoreController extends ChangeNotifier {
     return true;
   }
 
+  Future<bool?> removeMatch(matchName) async {
+    try {
+      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+
+      await matchRef.delete();
+
+      print('$matchName deleted succesfully');
+    } catch (e) {
+      print('Error deleting match: $e');
+    }
+    return true;
+  }
+
   Future<void> changeUserReady(matchName, user) async {
     print('test 1');
     try {
