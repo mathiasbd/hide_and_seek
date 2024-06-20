@@ -104,7 +104,7 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  Future<void> checkUsersReady(matchName) async {
+  Future<void> checkUsersReady(matchName, user) async {
     print('test 1');
     try {
       DocumentReference matchRef =
@@ -118,8 +118,11 @@ class FirestoreController extends ChangeNotifier {
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
 
+          int index = participants
+              .indexWhere((participant) => participant['id'] == user.id);
+
           for (int i = 0; i < participants.length; i++) {
-            if (!participants[i]['ready']) {
+            if (!participants[i]['ready'] && i != index) {
               return;
             }
           }
