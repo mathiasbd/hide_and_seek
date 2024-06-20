@@ -52,7 +52,6 @@ class CreateMatch extends StatelessWidget {
                 onPressed: () {
                   String matchName = myController.text;
                   createAndAdd(firestoreController, matchName);
-                  user.changeReady(matchName, user);
                   myController.clear();
                   if (matchName.isNotEmpty) {
                     Navigator.push(

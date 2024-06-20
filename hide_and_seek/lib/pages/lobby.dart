@@ -113,6 +113,7 @@ class Lobby extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (user.userType == 'Admin') {
+                      firestoreController.changeUserReady(matchName, user);
                       firestoreController.checkUsersReady(matchName);
                     } else {
                       user.changeReady(matchName, user);

@@ -57,7 +57,6 @@ class FirestoreController extends ChangeNotifier {
   }
 
   Future<void> changeUserReady(matchName, user) async {
-    print('test 1');
     try {
       DocumentReference matchRef =
           instance.collection('matches').doc(matchName);
@@ -106,6 +105,7 @@ class FirestoreController extends ChangeNotifier {
   }
 
   Future<void> checkUsersReady(matchName) async {
+    print('test 1');
     try {
       DocumentReference matchRef =
           instance.collection('matches').doc(matchName);
@@ -115,7 +115,6 @@ class FirestoreController extends ChangeNotifier {
       if (matchSnapshot.exists) {
         Map<String, dynamic>? matchData =
             matchSnapshot.data() as Map<String, dynamic>?;
-
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
 
@@ -124,7 +123,7 @@ class FirestoreController extends ChangeNotifier {
               return;
             }
           }
-
+          print('test 2');
           print('Participant ready status updated succesfully');
           changeGameStarted(matchName);
         } else {
