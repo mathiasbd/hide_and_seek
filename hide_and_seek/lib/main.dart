@@ -12,9 +12,9 @@ import 'classes/User.dart';
 import 'pages/home_screen.dart';
 import 'pages/join_match.dart';
 import 'pages/lobby.dart';
+import 'pages/seekers_page.dart';
 
 void main() async {
-  //Find ud af om det stateless eller andet
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(
@@ -74,6 +74,13 @@ class MyApp extends StatelessWidget {
 
             return MaterialPageRoute(
               builder: (context) => HiderPage(user: user),
+            );
+            case 'seeker_page':
+            final args = settings.arguments as Map<String, dynamic>;
+            final user = args['user'] as User;
+
+            return MaterialPageRoute(
+              builder: (context) => SeekerPage(),
             );
           default:
             return null;
