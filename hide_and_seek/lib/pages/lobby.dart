@@ -53,9 +53,9 @@ class Lobby extends StatelessWidget {
                   }
 
                   var matchData = snapshot.data!.data() as Map<String, dynamic>;
-                  var participants = (matchData['participants'] as List<dynamic> ?? [])
-                      .map((participant) => participant['name'])
-                      .toList();
+                  var participants = (matchData['participants'] as List<dynamic> ?? []);
+                  var participantsName = participants.map((participant) => participant['name']).toList();
+                  var participantsReady = participants.map((participant) => participant['ready']).toList();
 
                   if (participants.isEmpty) {
                     return const Center(child: Text('No participants found'));
@@ -67,12 +67,12 @@ class Lobby extends StatelessWidget {
                       return ListTile(
                         title: Row(
                           children: [
-                            Text('Player: ${participants[index]}'),
+                            Text('Player: ${participantsName[index]}'),
                             Container(
                               margin: EdgeInsets.only(left: 20),
                               width: 20,
                               height: 20,
-                              color: getColor(),
+                              color: getColor(participantsReady[index]),
                             )
                           ],
                         ),
@@ -125,8 +125,8 @@ class Lobby extends StatelessWidget {
     return buttonText;
   }
 
-  Color getColor() {
-    if(user.ready) {
+  Color getColor(participantsReady) {
+    if(participantsReady) {
       return Colors.green;
     } else {
       return Colors.red;
