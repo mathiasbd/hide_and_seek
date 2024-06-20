@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
-        '/hider_page': (context) => HiderPage(),
       },
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -68,6 +67,13 @@ class MyApp extends StatelessWidget {
 
             return MaterialPageRoute(
               builder: (context) => JoinMatch(user: user),
+            );
+          case 'hider_page':
+            final args = settings.arguments as Map<String, dynamic>;
+            final user = args['user'] as User;
+
+            return MaterialPageRoute(
+              builder: (context) => HiderPage(user: user),
             );
           default:
             return null;

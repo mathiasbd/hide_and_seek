@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'maps_page.dart';
 import '../my_colors.dart';
+import '../classes/User.dart';
 
 class HiderPage extends StatelessWidget {
+
+  final User user;
+
+  HiderPage({required this.user});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +46,7 @@ class HiderPage extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MapsPage()),
+                            MaterialPageRoute(builder: (context) => MapsPage(user: user,)),
                           );
                         },
                       ),

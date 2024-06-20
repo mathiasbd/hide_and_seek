@@ -97,7 +97,7 @@ class Lobby extends StatelessWidget {
                       print('Started game');
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HiderPage()),
+                        MaterialPageRoute(builder: (context) => HiderPage(user: user,)),
                       );
                     } else {
                       user.changeReady(matchName, user);
