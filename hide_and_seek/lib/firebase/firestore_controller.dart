@@ -9,7 +9,7 @@ class FirestoreController extends ChangeNotifier {
 
 
   void createMatch(matchName) {
-    instance.collection('matches').doc(matchName).set({'Match Name': matchName}).then((_) {
+    instance.collection('matches').doc(matchName).set({'Match Name': matchName, 'Match started': false}).then((_) {
       print('Match created succesfully');
     })
     .catchError((error) {
@@ -62,7 +62,7 @@ class FirestoreController extends ChangeNotifier {
 
       DocumentSnapshot matchSnapshot = await matchRef.get();
 
-      if(matchSnapshot.exists && matchSnapshot != null) {
+      if(matchSnapshot.exists) {
 
         Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
 
@@ -89,4 +89,31 @@ class FirestoreController extends ChangeNotifier {
       print('Error making participant ready: $e');
     }
   }
+
+  void changeGameStarted(matchName) {
+    instance.collection('matches').doc(matchName).set({'Match started': true}).then((_) {
+      print('Match created succesfully');
+    })
+    .catchError((error) {
+      print('Error creating match: $error');
+    });
+  }
+
+  // void checkGameStarted(matchName) async {
+  //   try {
+  //     DocumentReference matchRef = instance.collection('matches').doc(matchName);
+
+  //     DocumentSnapshot matchSnapshot = await matchRef.get();
+
+  //     if(matchSnapshot.exists) {
+  //       Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+
+  //       if (matchData != null) {
+  //         List<dynamic> matchStarted = matchData['Match started'];
+
+  //         matchStarted = true;
+  //       }
+  //     } 
+  //   }
+  // }
 }

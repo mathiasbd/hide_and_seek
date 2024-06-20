@@ -56,9 +56,18 @@ class Lobby extends StatelessWidget {
                   }
 
                   var matchData = snapshot.data!.data() as Map<String, dynamic>;
+
+                  var gameStarted = matchData['Match started'];
                   var participants = (matchData['participants'] as List<dynamic> ?? []);
                   var participantsName = participants.map((participant) => participant['name']).toList();
                   var participantsReady = participants.map((participant) => participant['ready']).toList();
+
+                  if(gameStarted == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HiderPage(user: user,)),
+                    );
+                  }
 
                   if (participants.isEmpty) {
                     return const Center(child: Text('No participants found'));
@@ -96,11 +105,7 @@ class Lobby extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (user.userType == 'Admin') {
-                      print('Started game');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HiderPage(user: user,)),
-                      );
+                      _firestoreController.changeGameStarted(matchName);
                     } else {
                       user.changeReady(matchName, user);
                     }
@@ -156,10 +161,15 @@ class Lobby extends StatelessWidget {
   }
 
   Color getColor(participantsReady) {
-    if(participantsReady) {
-      return Colors.green;
+    if(user.userType != 'Admin') {
+      if(participantsReady) {
+        return Colors.green;
+      } else {
+        return Colors.red;
+      }
     } else {
-      return Colors.red;
+      return Colors.black;
     }
+    
   }
 }

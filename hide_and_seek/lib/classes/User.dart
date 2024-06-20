@@ -17,7 +17,7 @@ class User {
 
   User(this.name, BuildContext context, this.userType) {
     id = _generateUniqueId();
-
+    
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
     _firestoreController = FirestoreController(instance: firestore);
   }
