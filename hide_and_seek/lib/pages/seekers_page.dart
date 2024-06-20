@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'maps_page.dart';
-import '../my_colors.dart';
 import '../classes/abillity.dart';
 
 class SeekerPage extends StatelessWidget {
@@ -8,10 +6,12 @@ class SeekerPage extends StatelessWidget {
   final Ability getHiderLocationsAbility = Ability('Get Hider Locations');
   final Ability catchHiderAbility = Ability('Catch Hider');
 
+  SeekerPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 95, 188, 255),
+      backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
         title: const Text('Seeker'),
         centerTitle: true,
@@ -23,7 +23,7 @@ class SeekerPage extends StatelessWidget {
         ),
         backgroundColor: Colors.blue[400],
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

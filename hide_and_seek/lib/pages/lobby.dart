@@ -10,26 +10,26 @@ class Lobby extends StatelessWidget {
   final String matchName;
   final User user;
 
-  Lobby({this.matchName = 'No Match', required this.user});
-
+  const Lobby({super.key, this.matchName = 'No Match', required this.user});
 
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController _firestoreController = FirestoreController(instance: firestore);
+    FirestoreController firestoreController =
+        FirestoreController(instance: firestore);
 
     return PopScope(
       onPopInvoked: (bool didPop) async {
         if (didPop && user.userType == 'Admin') {
-          await _firestoreController.removeMatch(matchName);
+          await firestoreController.removeMatch(matchName);
           return;
-        } else if(didPop) {
-          await _firestoreController.removeUserFromMatch(matchName, user);
+        } else if (didPop) {
+          await firestoreController.removeUserFromMatch(matchName, user);
           return;
         }
       },
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 95, 188, 255), // Change this line
+        backgroundColor: const Color.fromARGB(255, 95, 188, 255),
         appBar: AppBar(
           title: const Text('Lobby'),
           centerTitle: true,
@@ -46,27 +46,32 @@ class Lobby extends StatelessWidget {
           children: [
             Expanded(
               child: StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('matches')
-                    .doc(matchName)
-                    .snapshots(),
+                stream:
+                    firestore.collection('matches').doc(matchName).snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Center(child: const CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   var matchData = snapshot.data!.data() as Map<String, dynamic>;
+                  var matchStarted = matchData['Match started'] ?? false;
+                  var participants = List<Map<String, dynamic>>.from(
+                      matchData['participants'] ?? []);
+                  var participantsName = participants
+                      .map((participant) => participant['name'])
+                      .toList();
+                  var participantsReady = participants
+                      .map((participant) => participant['ready'])
+                      .toList();
 
-                  var matchStarted = matchData['Match started'];
-                  var participants = (matchData['participants'] as List<dynamic> ?? []);
-                  var participantsName = participants.map((participant) => participant['name']).toList();
-                  var participantsReady = participants.map((participant) => participant['ready']).toList();
-
-                  if(matchStarted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HiderPage(user: user,)),
-                    );
+                  if (matchStarted) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HiderPage(user: user)),
+                      );
+                    });
                   }
 
                   if (participants.isEmpty) {
@@ -81,7 +86,7 @@ class Lobby extends StatelessWidget {
                           children: [
                             Text('Player: ${participantsName[index]}'),
                             Container(
-                              margin: EdgeInsets.only(left: 20),
+                              margin: const EdgeInsets.only(left: 20),
                               width: 20,
                               height: 20,
                               decoration: BoxDecoration(
@@ -98,14 +103,13 @@ class Lobby extends StatelessWidget {
               ),
             ),
             Center(
-              
-              child: Container(
+              child: SizedBox(
                 width: 200.0,
                 height: 100.0,
                 child: ElevatedButton(
                   onPressed: () {
                     if (user.userType == 'Admin') {
-                      _firestoreController.changeGameStarted(matchName);
+                      firestoreController.changeGameStarted(matchName);
                     } else {
                       user.changeReady(matchName, user);
                     }
@@ -122,9 +126,8 @@ class Lobby extends StatelessWidget {
                 ),
               ),
             ),
-
             Center(
-              child: Container(
+              child: SizedBox(
                 width: 200.0,
                 height: 100.0,
                 child: ElevatedButton(
@@ -137,9 +140,9 @@ class Lobby extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Go to Seeker Page',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 24.0,
                         color: Color.fromARGB(255, 255, 255, 255)),
                   ),
@@ -153,23 +156,14 @@ class Lobby extends StatelessWidget {
   }
 
   String getButtonText() {
-    String buttonText = 'Ready';
-    if (user.userType == 'Admin') {
-      buttonText = 'Start game';
-    }
-    return buttonText;
+    return user.userType == 'Admin' ? 'Start game' : 'Ready';
   }
 
-  Color getColor(participantsReady) {
-    if(user.userType != 'Admin') {
-      if(participantsReady) {
-        return Colors.green;
-      } else {
-        return Colors.red;
-      }
+  Color getColor(bool participantsReady) {
+    if (user.userType != 'Admin') {
+      return participantsReady ? Colors.green : Colors.red;
     } else {
       return Colors.black;
     }
-    
   }
 }

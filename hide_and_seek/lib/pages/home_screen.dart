@@ -4,15 +4,15 @@ import 'package:provider/provider.dart';
 import 'package:hide_and_seek/pages/create_match.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:hide_and_seek/pages/join_match.dart';
-import 'package:hide_and_seek/pages/seekers_page.dart';
-import 'package:hide_and_seek/pages/game_finnish_page.dart';
 import '../classes/User.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController _firestoreController =
+    FirestoreController firestoreController =
         FirestoreController(instance: firestore);
     final TextEditingController myController = TextEditingController();
 
@@ -21,17 +21,17 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/GeoChaser.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          Align(
+          const Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                   top: 40.0), // Adjust the top padding as needed
               child: Text(
                 'GeoChaser',
@@ -48,20 +48,20 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Container(
+                SizedBox(
                   width: 200.0,
                   height: 60.0,
                   child: TextField(
                     controller: myController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Player name',
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w900, // Makes the text thicker
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 200.0,
                   height: 100.0,
                   child: ElevatedButton(
@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                       print('Button 1 pressed');
                       String name = myController.text;
                       //myController.clear();
-                      User user = new User(name, context, 'Admin');
+                      User user = User(name, context, 'Admin');
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
@@ -79,17 +79,17 @@ class HomeScreen extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Create Match',
                       style: TextStyle(
                           fontSize: 24.0,
-                          color: const Color.fromARGB(255, 255, 255, 255)),
+                          color: Color.fromARGB(255, 255, 255, 255)),
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 200.0,
                   height: 100.0,
                   child: ElevatedButton(
@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                       print('Button 2 pressed');
                       String name = myController.text;
                       //myController.clear();
-                      User user = new User(name, context, 'Standard');
+                      User user = User(name, context, 'Standard');
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
@@ -107,13 +107,13 @@ class HomeScreen extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Join Match',
                       style: TextStyle(
                           fontSize: 24.0,
-                          color: const Color.fromARGB(255, 255, 255, 255)),
+                          color: Color.fromARGB(255, 255, 255, 255)),
                     ),
                   ),
                 ),

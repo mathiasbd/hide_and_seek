@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hide_and_seek/pages/join_match.dart';
 
 class FirestoreController extends ChangeNotifier {
   final FirebaseFirestore instance;

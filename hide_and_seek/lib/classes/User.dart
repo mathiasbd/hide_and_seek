@@ -39,7 +39,7 @@ class User {
   // }
 
   void printDetails() {
-    print('Name: $name, ID: $id, Type: ${userType?.toString() ?? "None"}');
+    print('Name: $name, ID: $id, Type: ${userType.toString() ?? "None"}');
   }
 
   void changeReady(matchName, user) async {

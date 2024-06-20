@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:hide_and_seek/pages/create_match.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../firebase/firebase_options.dart';
 import '../classes/User.dart';
 import 'lobby.dart';
 
 class JoinMatch extends StatelessWidget {
   final User user;
 
-  JoinMatch({required this.user});
+  const JoinMatch({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController _firestoreController =
+    FirestoreController firestoreController =
         FirestoreController(instance: firestore);
     final TextEditingController myController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 95, 188, 255),
+      backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
         title: const Text('Join Match'),
         centerTitle: true,
@@ -53,8 +50,8 @@ class JoinMatch extends StatelessWidget {
                 margin: const EdgeInsets.all(10.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    _firestoreController.joinMatch(matchName, user.toMap());
-                    if (!matchName.isEmpty) {
+                    firestoreController.joinMatch(matchName, user.toMap());
+                    if (matchName.isNotEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import '../my_colors.dart';
 
 class GameFinishPage extends StatelessWidget {
+  const GameFinishPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 95, 188, 255),
+      backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
-        title: Text('Game Finish Page'),
+        title: const Text('Game Finish Page'),
             centerTitle: true,
             titleTextStyle: const TextStyle(
             fontSize: 32.0,
@@ -18,7 +19,7 @@ class GameFinishPage extends StatelessWidget {
           backgroundColor: Colors.blue[400],
       ),
       // Add more widgets to the body as needed
-      body: Center(child: Text('Game Over')),
+      body: const Center(child: Text('Game Over')),
     );
   }
 }

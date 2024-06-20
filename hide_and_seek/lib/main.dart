@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_seek/pages/create_match.dart';
-import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:hide_and_seek/pages/hider_page.dart';
 import 'package:hide_and_seek/pages/home_screen.dart';
 import 'package:hide_and_seek/pages/join_match.dart';
@@ -9,8 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase/firebase_options.dart';
 import 'classes/User.dart';
-import 'pages/home_screen.dart';
-import 'pages/join_match.dart';
 import 'pages/lobby.dart';
 import 'pages/seekers_page.dart';
 
@@ -42,7 +39,7 @@ class MyApp extends StatelessWidget {
       title: 'MyApp',
       initialRoute: '/',
       routes: {
-        '/': (context) => HomeScreen(),
+        '/': (context) => const HomeScreen(),
       },
       onGenerateRoute: (settings) {
         switch (settings.name) {
