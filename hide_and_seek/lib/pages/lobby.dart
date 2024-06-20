@@ -113,7 +113,7 @@ class Lobby extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (user.userType == 'Admin') {
-                      firestoreController.changeGameStarted(matchName);
+                      firestoreController.checkUsersReady(matchName);
                     } else {
                       user.changeReady(matchName, user);
                     }
@@ -138,14 +138,15 @@ class Lobby extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SeekerPage()),
+                      MaterialPageRoute(
+                          builder: (context) => HiderPage(user: user)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                   ),
                   child: const Text(
-                    'Go to Seeker Page',
+                    'Go to Hider Page',
                     style: TextStyle(
                         fontSize: 24.0,
                         color: Color.fromARGB(255, 255, 255, 255)),

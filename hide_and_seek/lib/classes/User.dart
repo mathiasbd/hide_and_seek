@@ -5,20 +5,19 @@ import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-
 class User {
-  LatLng ? location;
+  LatLng? location;
   String name;
   String id = '';
   String userType;
   bool ready = false;
   late FirestoreController _firestoreController;
 
-
   User(this.name, BuildContext context, this.userType) {
     id = _generateUniqueId();
-    
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
+
+    FirebaseFirestore firestore =
+        Provider.of<FirebaseFirestore>(context, listen: false);
     _firestoreController = FirestoreController(instance: firestore);
   }
 
@@ -44,7 +43,7 @@ class User {
 
   void changeReady(matchName, user) async {
     ready = !ready;
-    _firestoreController.changeUserReady(matchName, user);
+    await _firestoreController.changeUserReady(matchName, user);
     print('changed ready to $ready');
   }
 

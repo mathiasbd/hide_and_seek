@@ -6,12 +6,13 @@ class FirestoreController extends ChangeNotifier {
 
   FirestoreController({required this.instance});
 
-
   void createMatch(matchName) {
-    instance.collection('matches').doc(matchName).set({'Match Name': matchName, 'Match started': false}).then((_) {
+    instance
+        .collection('matches')
+        .doc(matchName)
+        .set({'Match Name': matchName, 'Match started': false}).then((_) {
       print('Match created succesfully');
-    })
-    .catchError((error) {
+    }).catchError((error) {
       print('Error creating match: $error');
     });
   }
@@ -32,8 +33,8 @@ class FirestoreController extends ChangeNotifier {
           .collection('matches')
           .doc(matchName)
           .update({
-            'participants': FieldValue.arrayRemove([user.toMap()])
-          });
+        'participants': FieldValue.arrayRemove([user.toMap()])
+      });
       print('User removed from the Firestore');
     } catch (e) {
       print('Error removing user: $e');
@@ -43,7 +44,8 @@ class FirestoreController extends ChangeNotifier {
 
   Future<bool?> removeMatch(matchName) async {
     try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
 
       await matchRef.delete();
 
@@ -57,18 +59,20 @@ class FirestoreController extends ChangeNotifier {
   Future<void> changeUserReady(matchName, user) async {
     print('test 1');
     try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
 
       DocumentSnapshot matchSnapshot = await matchRef.get();
 
-      if(matchSnapshot.exists) {
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
 
-        Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
-
-        if(matchData != null) {
+        if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
 
-          int index = participants.indexWhere((participant) => participant['id'] == user.id);
+          int index = participants
+              .indexWhere((participant) => participant['id'] == user.id);
 
           if (index != -1) {
             participants[index]['ready'] = user.ready;
@@ -91,7 +95,8 @@ class FirestoreController extends ChangeNotifier {
 
   void changeGameStarted(matchName) async {
     try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
 
       await matchRef.update({'Match started': true});
       print('Game started succesfully');
@@ -100,21 +105,37 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  // void checkGameStarted(matchName) async {
-  //   try {
-  //     DocumentReference matchRef = instance.collection('matches').doc(matchName);
+  Future<void> checkUsersReady(matchName) async {
+    try {
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
 
-  //     DocumentSnapshot matchSnapshot = await matchRef.get();
+      DocumentSnapshot matchSnapshot = await matchRef.get();
 
-  //     if(matchSnapshot.exists) {
-  //       Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
 
-  //       if (matchData != null) {
-  //         List<dynamic> matchStarted = matchData['Match started'];
+        if (matchData != null) {
+          List<dynamic> participants = matchData['participants'];
 
-  //         matchStarted = true;
-  //       }
-  //     } 
-  //   }
-  // }
+          for (int i = 0; i < participants.length; i++) {
+            if (!participants[i]['ready']) {
+              return;
+            }
+          }
+
+          print('Participant ready status updated succesfully');
+          changeGameStarted(matchName);
+        } else {
+          print('No participant found');
+        }
+      } else {
+        print('Match document reference does not exist');
+      }
+    } catch (e) {
+      print('Error checking participant ready: $e');
+    }
+    return;
+  }
 }
