@@ -90,13 +90,15 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  void changeGameStarted(matchName) {
-    instance.collection('matches').doc(matchName).set({'Match started': true}).then((_) {
-      print('Match created succesfully');
-    })
-    .catchError((error) {
-      print('Error creating match: $error');
-    });
+  void changeGameStarted(matchName) async {
+    try {
+      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+
+      await matchRef.update({'Match started': true});
+      print('Game started succesfully');
+    } catch (e) {
+      print('Error starting the game: $e');
+    }
   }
 
   // void checkGameStarted(matchName) async {

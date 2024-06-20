@@ -57,12 +57,12 @@ class Lobby extends StatelessWidget {
 
                   var matchData = snapshot.data!.data() as Map<String, dynamic>;
 
-                  var gameStarted = matchData['Match started'];
+                  var matchStarted = matchData['Match started'];
                   var participants = (matchData['participants'] as List<dynamic> ?? []);
                   var participantsName = participants.map((participant) => participant['name']).toList();
                   var participantsReady = participants.map((participant) => participant['ready']).toList();
 
-                  if(gameStarted == true) {
+                  if(matchStarted) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => HiderPage(user: user,)),
