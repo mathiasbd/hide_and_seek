@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_seek/pages/maps_page.dart';
-import '../classes/abillity.dart';
+import '../classes/abillity_manager.dart';
 
 class SeekerPage extends StatelessWidget {
 
-  final Ability getHiderLocationsAbility = Ability('Get Hider Locations');
-  final Ability catchHiderAbility = Ability('Catch Hider');
-
+  final AbillityManager abillityManager = AbillityManager();
+  
   SeekerPage({super.key});
 
   @override
@@ -68,15 +67,28 @@ class SeekerPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.location_on, color: Colors.white),
+                      onPressed: () {
+                        abillityManager.getHiderLocations();
+                      },
+                      child: Icon(Icons.visibility, color: Colors.white),
                       backgroundColor: Colors.black,
                       shape: CircleBorder(),
                     ),
                     SizedBox(width: 20),
                     FloatingActionButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        abillityManager.getNoiseQue();
+                      },
                       child: Icon(Icons.volume_up, color: Colors.white),
+                      backgroundColor: Colors.black,
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(width: 20),
+                    FloatingActionButton(
+                      onPressed: () {
+                        abillityManager.catchHider();
+                      },
+                      child: Icon(Icons.pan_tool, color: Colors.white),
                       backgroundColor: Colors.black,
                       shape: CircleBorder(),
                     ),
