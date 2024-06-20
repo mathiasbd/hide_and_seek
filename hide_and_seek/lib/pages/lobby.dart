@@ -6,11 +6,10 @@ import 'package:provider/provider.dart';
 import '../classes/User.dart';
 
 class Lobby extends StatelessWidget {
-  final String rights;
   final String matchName;
   final User user;
 
-  Lobby({this.rights = 'Standard', this.matchName = 'No Match', required this.user});
+  Lobby({this.matchName = 'No Match', required this.user});
 
 
   @override
@@ -20,7 +19,10 @@ class Lobby extends StatelessWidget {
 
     return PopScope(
       onPopInvoked: (bool didPop) async {
-        if (didPop) {
+        if (didPop && user.userType == 'Admin') {
+          await _firestoreController.removeMatch(matchName);
+          return;
+        } else if(didPop) {
           await _firestoreController.removeUserFromMatch(matchName, user);
           return;
         }
@@ -72,7 +74,10 @@ class Lobby extends StatelessWidget {
                               margin: EdgeInsets.only(left: 20),
                               width: 20,
                               height: 20,
-                              color: getColor(participantsReady[index]),
+                              decoration: BoxDecoration(
+                                color: getColor(participantsReady[index]),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             )
                           ],
                         ),
@@ -88,7 +93,7 @@ class Lobby extends StatelessWidget {
                 height: 100.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (rights == 'Admin') {
+                    if (user.userType == 'Admin') {
                       print('Started game');
                       Navigator.push(
                         context,
@@ -118,10 +123,9 @@ class Lobby extends StatelessWidget {
 
   String getButtonText() {
     String buttonText = 'Ready';
-    if (rights == 'Admin') {
+    if (user.userType == 'Admin') {
       buttonText = 'Start game';
     }
-    ;
     return buttonText;
   }
 

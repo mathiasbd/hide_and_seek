@@ -67,8 +67,8 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       print('Button 1 pressed');
                       String name = myController.text;
-                      myController.clear();
-                      User user = new User(name, context);
+                      //myController.clear();
+                      User user = new User(name, context, 'Admin');
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
@@ -95,8 +95,8 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       print('Button 2 pressed');
                       String name = myController.text;
-                      myController.clear();
-                      User user = new User(name, context);
+                      //myController.clear();
+                      User user = new User(name, context, 'Standard');
                       if (name.isNotEmpty) {
                         Navigator.push(
                           context,
