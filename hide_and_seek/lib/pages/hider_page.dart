@@ -46,7 +46,7 @@ class HiderPage extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MapsPage(user: user,)),
+                            MaterialPageRoute(builder: (context) => MapsPage()),
                           );
                         },
                       ),

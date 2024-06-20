@@ -5,18 +5,12 @@ import '../classes/User.dart';
 
 class MapsPage extends StatefulWidget {
 
-  final User user;
-
-  MapsPage({required this.user});
-
   @override
-  _MapsPageState createState() => _MapsPageState(user: user);
+  _MapsPageState createState() => _MapsPageState();
 }
 
 class _MapsPageState extends State<MapsPage> {
   final locationController = Location();
-  final User user;
-  _MapsPageState({required this.user});
 
   LatLng? currentPos;
   BitmapDescriptor currentPosIcon = BitmapDescriptor.defaultMarker;
@@ -54,7 +48,7 @@ class _MapsPageState extends State<MapsPage> {
         setState(() {
           currentPos =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-              user.updateLocation(currentPos);
+              //user.updateLocation(currentPos);
         });
         print(currentPos);
       }
