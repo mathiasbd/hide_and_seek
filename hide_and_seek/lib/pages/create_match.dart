@@ -18,7 +18,8 @@ class CreateMatch extends StatelessWidget {
     final TextEditingController myController = TextEditingController();
 
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 95, 188, 255), // Change this line
+        backgroundColor:
+            const Color.fromARGB(255, 95, 188, 255), // Change this line
         appBar: AppBar(
             title: const Text('Create Match'),
             centerTitle: true,
