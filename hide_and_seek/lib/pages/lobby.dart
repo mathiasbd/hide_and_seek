@@ -30,7 +30,7 @@ class Lobby extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Color.fromARGB(255, 95, 188, 255), // Change this line
         appBar: AppBar(
-          title: const Text('Create Match'),
+          title: const Text('Lobby'),
           centerTitle: true,
           titleTextStyle: const TextStyle(
             fontSize: 32.0,

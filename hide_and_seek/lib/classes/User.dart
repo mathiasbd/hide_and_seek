@@ -1,11 +1,13 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 
 class User {
+  LatLng ? location;
   String name;
   String id = '';
   String userType;
@@ -44,6 +46,10 @@ class User {
     ready = !ready;
     _firestoreController.changeUserReady(matchName, user);
     print('changed ready to $ready');
+  }
+
+  void updateLocation(location) {
+    location = location;
   }
 
   Map<String, dynamic> toMap() {
