@@ -89,7 +89,7 @@ class SeekerPage extends StatelessWidget {
                     SizedBox(width: 20),
                     FloatingActionButton(
                       onPressed: () {
-                        abillityManager.catchHider();
+                        // abillityManager.catchHider();
                       },
                       child: Icon(Icons.pan_tool, color: Colors.white),
                       backgroundColor: Colors.black,

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hide_and_seek/pages/create_match.dart';
-import 'package:hide_and_seek/pages/hider_page.dart';
-import 'package:hide_and_seek/pages/home_screen.dart';
-import 'package:hide_and_seek/pages/join_match.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase/firebase_options.dart';
 import 'classes/User.dart';
+
+import 'package:hide_and_seek/pages/create_match.dart';
+import 'package:hide_and_seek/pages/hider_page.dart';
+import 'package:hide_and_seek/pages/home_screen.dart';
+import 'package:hide_and_seek/pages/join_match.dart';
 import 'pages/lobby.dart';
 import 'pages/seekers_page.dart';
 
