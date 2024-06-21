@@ -59,10 +59,7 @@ class Lobby extends StatelessWidget {
 
                   if (!snapshot.hasData || !snapshot.data!.exists) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => JoinMatch(user: user)),
-                      );
+                      Navigator.pop(context);
                     });
                     return const Center(child: Text('Match does not exist'));
                   }
