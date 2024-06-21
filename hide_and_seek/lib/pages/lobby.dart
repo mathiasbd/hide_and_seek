@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:hide_and_seek/pages/hider_page.dart';
+import 'package:hide_and_seek/pages/join_match.dart';
 import 'package:hide_and_seek/pages/seekers_page.dart';
 import 'package:provider/provider.dart';
 import '../classes/User.dart';
@@ -52,6 +53,14 @@ class Lobby extends StatelessWidget {
                 stream:
                     firestore.collection('matches').doc(matchName).snapshots(),
                 builder: (context, snapshot) {
+                  if (!snapshot.data!.exists) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => JoinMatch(user: user)),
+                      );
+                    });
+                  }
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
