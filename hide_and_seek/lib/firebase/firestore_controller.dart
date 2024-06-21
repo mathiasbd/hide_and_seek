@@ -99,7 +99,6 @@ class FirestoreController extends ChangeNotifier {
           instance.collection('matches').doc(matchName);
 
       await matchRef.update({'Match started': true});
-      await findRandomSeeker(matchName);
       print('Game started succesfully');
     } catch (e) {
       print('Error starting the game: $e');
@@ -158,6 +157,7 @@ class FirestoreController extends ChangeNotifier {
           await matchRef.update({
               'participants': participants,
           });
+          print('Seeker role assigned');
         }
       }
     } catch (e) {

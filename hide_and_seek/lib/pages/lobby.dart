@@ -20,6 +20,7 @@ class Lobby extends StatelessWidget {
 
     return PopScope(
       onPopInvoked: (bool didPop) async {
+        user.forceUnready(matchName, user);
         if (didPop && user.userType == 'Admin') {
           await firestoreController.removeMatch(matchName);
           return;
@@ -69,22 +70,23 @@ class Lobby extends StatelessWidget {
 
                   int userIndex = participants.indexWhere((participant) => participant['id'] == user.id);
 
-                  if (matchStarted && participants[userIndex]['role'] == 'Hider') {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HiderPage(user: user)),
-                      );
-                    });
-                  } else if (matchStarted && participants[userIndex]['role'] == 'Seeker') {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SeekerPage(user: user)),
-                      );
-                    });
+                  if (matchStarted) {
+                    user.changeReady(matchName, user);
+                    if (participants[userIndex]['role'] == 'Hider') {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => HiderPage(user: user)),
+                        );
+                      });
+                    } else if (participants[userIndex]['role'] == 'Seeker') {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => SeekerPage(user: user)),
+                        );
+                      });
+                    }
                   }
 
                   if (participants.isEmpty) {

@@ -42,10 +42,18 @@ class User {
     print('Name: $name, ID: $id, Type: ${userType.toString() ?? "None"}');
   }
 
-  void changeReady(matchName, user) async {
+  Future<void> changeReady(matchName, user) async {
     ready = !ready;
     await _firestoreController.changeUserReady(matchName, user);
     print('changed ready to $ready');
+  }
+
+  Future<void> forceUnready(matchName, user) async {
+    if (ready == true) {
+      await _firestoreController.changeUserReady(matchName, user);
+      print('Forced user to be unready');
+    }
+    print('User was already undready');
   }
 
   void updateLocation(location) {
