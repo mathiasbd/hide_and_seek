@@ -51,6 +51,7 @@ class User {
   Future<void> forceUnready(matchName, user) async {
     if (ready == true) {
       ready = !ready;
+      _firestoreController.changeUserReady(matchName, user);
       print('Forced user to be unready');
     } else {
       print('User was already undready');

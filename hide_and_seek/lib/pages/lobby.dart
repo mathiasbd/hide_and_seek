@@ -20,11 +20,12 @@ class Lobby extends StatelessWidget {
 
     return PopScope(
       onPopInvoked: (bool didPop) async {
-        user.forceUnready(matchName, user);
         if (didPop && user.userType == 'Admin') {
+          await user.forceUnready(matchName, user);
           await firestoreController.removeMatch(matchName);
           return;
         } else if (didPop) {
+          await user.forceUnready(matchName, user);
           await firestoreController.removeUserFromMatch(matchName, user);
           return;
         }
