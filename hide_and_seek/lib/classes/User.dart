@@ -10,6 +10,7 @@ class User {
   String name;
   String id = '';
   String userType;
+  String role = 'Hider';
   bool ready = false;
   late FirestoreController _firestoreController;
 
@@ -57,6 +58,7 @@ class User {
       'name': name,
       'ready': ready,
       'userType': userType,
+      'role': role,
     };
   }
 }

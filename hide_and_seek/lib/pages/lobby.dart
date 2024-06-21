@@ -67,12 +67,22 @@ class Lobby extends StatelessWidget {
                       .map((participant) => participant['userType'])
                       .toList();
 
-                  if (matchStarted) {
+                  int userIndex = participants.indexWhere((participant) => participant['id'] == user.id);
+
+                  if (matchStarted && participants[userIndex]['role'] == 'Hider') {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => HiderPage(user: user)),
+                      );
+                    });
+                  } else if (matchStarted && participants[userIndex]['role'] == 'Seeker') {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SeekerPage(user: user)),
                       );
                     });
                   }
@@ -113,7 +123,7 @@ class Lobby extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (user.userType == 'Admin') {
-                      firestoreController.checkUsersReady(matchName, user);
+                      startMatch(matchName, user, firestoreController);
                     } else {
                       user.changeReady(matchName, user);
                     }
@@ -169,6 +179,14 @@ class Lobby extends StatelessWidget {
       return participantsReady ? Colors.green : Colors.red;
     } else {
       return Colors.black;
+    }
+  }
+
+  void startMatch(matchName, user, firestoreController) async {
+    bool isReady = await firestoreController.checkUsersReady(matchName, user);
+    if(isReady) {
+      await firestoreController.findRandomSeeker(matchName);
+      await firestoreController.changeGameStarted(matchName);
     }
   }
 }

@@ -74,8 +74,8 @@ class CreateMatch extends StatelessWidget {
         )));
   }
 
-  void createAndAdd(firestoreController, matchName) {
-    firestoreController?.createMatch(matchName);
-    firestoreController.joinMatch(matchName, user.toMap());
+  void createAndAdd(firestoreController, matchName) async {
+    await firestoreController?.createMatch(matchName);
+    await firestoreController.joinMatch(matchName, user.toMap());
   }
 }

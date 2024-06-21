@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
             final user = args['user'] as User;
 
             return MaterialPageRoute(
-              builder: (context) => SeekerPage(),
+              builder: (context) => SeekerPage(user: user),
             );
           default:
             return null;

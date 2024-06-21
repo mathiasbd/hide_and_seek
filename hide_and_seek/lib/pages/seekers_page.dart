@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_seek/pages/maps_page.dart';
 import '../classes/abillity_manager.dart';
+import '../classes/User.dart';
 
 class SeekerPage extends StatelessWidget {
 
   final AbillityManager abillityManager = AbillityManager();
   
-  SeekerPage({super.key});
+  User user;
+
+  SeekerPage({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

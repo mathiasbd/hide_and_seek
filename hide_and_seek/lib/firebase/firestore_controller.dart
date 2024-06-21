@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:math';
 
 class FirestoreController extends ChangeNotifier {
   final FirebaseFirestore instance;
 
   FirestoreController({required this.instance});
 
-  void createMatch(matchName) {
+  Future<void> createMatch(matchName) async {
     instance
         .collection('matches')
         .doc(matchName)
@@ -17,7 +18,7 @@ class FirestoreController extends ChangeNotifier {
     });
   }
 
-  void joinMatch(matchName, user) {
+  Future<void> joinMatch(matchName, user) async {
     instance.collection('matches').doc(matchName).update({
       'participants': FieldValue.arrayUnion([user]),
     }).then((_) {
@@ -92,20 +93,20 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  void changeGameStarted(matchName) async {
+  Future<void> changeGameStarted(matchName) async {
     try {
       DocumentReference matchRef =
           instance.collection('matches').doc(matchName);
 
       await matchRef.update({'Match started': true});
+      await findRandomSeeker(matchName);
       print('Game started succesfully');
     } catch (e) {
       print('Error starting the game: $e');
     }
   }
 
-  Future<void> checkUsersReady(matchName, user) async {
-    print('test 1');
+  Future<bool> checkUsersReady(matchName, user) async {
     try {
       DocumentReference matchRef =
           instance.collection('matches').doc(matchName);
@@ -123,12 +124,11 @@ class FirestoreController extends ChangeNotifier {
 
           for (int i = 0; i < participants.length; i++) {
             if (!participants[i]['ready'] && i != index) {
-              return;
+              return false;
             }
           }
-          print('test 2');
-          print('Participant ready status updated succesfully');
-          changeGameStarted(matchName);
+          print('Participant ready status checked succesfully');
+          return true;
         } else {
           print('No participant found');
         }
@@ -138,6 +138,30 @@ class FirestoreController extends ChangeNotifier {
     } catch (e) {
       print('Error checking participant ready: $e');
     }
-    return;
+    return false;
+  }
+
+  Future<void> findRandomSeeker(matchName) async {
+    try {
+      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+
+      DocumentSnapshot matchSnapshot = await matchRef.get();
+
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
+        if (matchData != null) {
+          List<dynamic> participants = matchData['participants'];
+          var random = Random();
+          var randomSeeker = random.nextInt(participants.length);
+          participants[randomSeeker]['role'] = 'Seeker';
+          await matchRef.update({
+              'participants': participants,
+          });
+        }
+      }
+    } catch (e) {
+      print('Error checking if user is seeker');
+    }
   }
 }
