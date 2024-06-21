@@ -80,7 +80,7 @@ class SeekerPage extends StatelessWidget {
                     SizedBox(width: 20),
                     FloatingActionButton(
                       onPressed: () {
-                        abillityManager.getNoiseQue();
+                        // abillityManager.getNoiseQue();
                       },
                       child: Icon(Icons.volume_up, color: Colors.white),
                       backgroundColor: Colors.black,
