@@ -53,16 +53,18 @@ class Lobby extends StatelessWidget {
                 stream:
                     firestore.collection('matches').doc(matchName).snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.data!.exists) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => JoinMatch(user: user)),
                       );
                     });
-                  }
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: Text('Match does not exist'));
                   }
 
                   var matchData = snapshot.data!.data() as Map<String, dynamic>;

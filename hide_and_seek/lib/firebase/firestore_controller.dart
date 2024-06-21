@@ -8,7 +8,7 @@ class FirestoreController extends ChangeNotifier {
   FirestoreController({required this.instance});
 
   Future<void> createMatch(matchName) async {
-    instance
+    await instance
         .collection('matches')
         .doc(matchName)
         .set({'Match Name': matchName, 'Match started': false}).then((_) {
@@ -19,7 +19,7 @@ class FirestoreController extends ChangeNotifier {
   }
 
   Future<void> joinMatch(matchName, user) async {
-    instance.collection('matches').doc(matchName).update({
+    await instance.collection('matches').doc(matchName).update({
       'participants': FieldValue.arrayUnion([user]),
     }).then((_) {
       print('$user added to $matchName');
