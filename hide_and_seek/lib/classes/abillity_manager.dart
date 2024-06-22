@@ -19,7 +19,8 @@ class AbilityManager {
     // make points on the map for each hider
   }
 
-  void catchHiders(String matchName, double radius) {
+  void catchHiders(String matchName) {
+    double radius = 1;
     firestoreController.catchHidersWithinRadius(matchName, radius);
   }
 }
