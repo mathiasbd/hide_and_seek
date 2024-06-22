@@ -29,7 +29,8 @@ class User {
   }
 
   void printDetails() {
-    print('Name: $name, Location: $location ID: $id, Type: ${userType.toString() ?? "None"}');
+    print(
+        'Name: $name, Location: $location ID: $id, Type: ${userType.toString() ?? "None"}');
   }
 
   Future<void> changeReady(matchName, user) async {
@@ -47,8 +48,18 @@ class User {
     }
   }
 
-  void updateLocation(location) {
-    location = location;
+  Future<void> updateLocation(LatLng newLocation, String matchName) async {
+    this.location = newLocation;
+
+    Map<String, dynamic> locationMap = {
+      'latitude': newLocation.latitude,
+      'longitude': newLocation.longitude,
+    };
+
+    await _firestoreController.changeUserLocation(
+        matchName, this.toMap()..update('location', (_) => locationMap));
+
+    print('Location updated to $newLocation');
   }
 
   Map<String, dynamic> toMap() {
@@ -58,7 +69,10 @@ class User {
       'ready': ready,
       'userType': userType,
       'role': role,
-      'location': location,
+      'location': {
+        'latitude': location?.latitude,
+        'longitude': location?.longitude,
+      }
     };
   }
 }

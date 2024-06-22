@@ -58,13 +58,7 @@ class _MapsPageState extends State<MapsPage> {
           currentPos =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
         });
-        widget.user.location = currentPos;
-        try {
-        await FirestoreController(instance: FirebaseFirestore.instance)
-            .changeUserLocation(widget.matchName, widget.user);
-        } catch (e) {
-          print("Failed to update location in Firebase: $e");
-        }
+        widget.user.updateLocation(currentPos!, widget.matchName);
       }
     });
   }
