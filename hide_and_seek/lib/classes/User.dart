@@ -29,7 +29,7 @@ class User {
   }
 
   void printDetails() {
-    print('Name: $name, ID: $id, Type: ${userType.toString() ?? "None"}');
+    print('Name: $name, Location: $location ID: $id, Type: ${userType.toString() ?? "None"}');
   }
 
   Future<void> changeReady(matchName, user) async {
@@ -58,6 +58,7 @@ class User {
       'ready': ready,
       'userType': userType,
       'role': role,
+      'location': location,
     };
   }
 }
