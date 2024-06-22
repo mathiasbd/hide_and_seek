@@ -179,8 +179,7 @@ class FirestoreController extends ChangeNotifier {
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
 
-          int index = participants
-              .indexWhere((participant) => participant['id'] == user.id);
+          int index = participants.indexWhere((participant) => participant['id'] == user['id']);
 
           if (index != -1) {
             participants[index]['location'] = user.location;

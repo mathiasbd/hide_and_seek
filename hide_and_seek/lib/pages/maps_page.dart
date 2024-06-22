@@ -58,7 +58,6 @@ class _MapsPageState extends State<MapsPage> {
           currentPos =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
         });
-        print("Match Name: ${widget.matchName}");
         widget.user.updateLocation(currentPos!, widget.matchName);
       }
     });
