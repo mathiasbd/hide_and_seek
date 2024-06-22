@@ -142,7 +142,8 @@ class FirestoreController extends ChangeNotifier {
 
   Future<void> findRandomSeeker(matchName) async {
     try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
 
       DocumentSnapshot matchSnapshot = await matchRef.get();
 
@@ -155,7 +156,7 @@ class FirestoreController extends ChangeNotifier {
           var randomSeeker = random.nextInt(participants.length);
           participants[randomSeeker]['role'] = 'Seeker';
           await matchRef.update({
-              'participants': participants,
+            'participants': participants,
           });
           print('Seeker role assigned');
         }
@@ -165,38 +166,34 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  Future<void> changeUserLocation(matchName, user) async {
+  Future<void> changeUserLocation(
+      String matchName, Map<String, dynamic> user) async {
     try {
       DocumentReference matchRef =
           instance.collection('matches').doc(matchName);
-
       DocumentSnapshot matchSnapshot = await matchRef.get();
-
       if (matchSnapshot.exists) {
         Map<String, dynamic>? matchData =
             matchSnapshot.data() as Map<String, dynamic>?;
-
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
-
-          int index = participants.indexWhere((participant) => participant['id'] == user['id']);
-
+          int index = participants
+              .indexWhere((participant) => participant['id'] == user['id']);
           if (index != -1) {
-            participants[index]['location'] = user.location;
-
+            participants[index]['location'] = user['location'];
             await matchRef.update({
               'participants': participants,
             });
-            print('Participant location updated succesfully');
+            print('User location updated successfully');
           } else {
-            print('No participant found');
+            print('User not found in match');
           }
         }
       } else {
-        print('Match document reference does not exist');
+        print('Match document does not exist');
       }
     } catch (e) {
-      print('Error updating participant location: $e');
+      print('Error updating user location: $e');
     }
   }
 }
