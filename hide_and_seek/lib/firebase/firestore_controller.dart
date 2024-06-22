@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:math';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../classes/abillity_manager.dart';
 
 class FirestoreController extends ChangeNotifier {
   final FirebaseFirestore instance;
@@ -195,5 +197,81 @@ class FirestoreController extends ChangeNotifier {
     } catch (e) {
       print('Error updating user location: $e');
     }
+  }
+
+  Future<LatLng> getSeekerLocation(matchName) async {
+    try {
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
+      DocumentSnapshot matchSnapshot = await matchRef.get();
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
+        if (matchData != null) {
+          List<dynamic> participants = matchData['participants'];
+          int index = participants.indexWhere(
+              (participant) => participant['role'] == 'Seeker');
+          if (index != -1) {
+            Map<String, dynamic> seekerLocation =
+                participants[index]['location'];
+            return LatLng(seekerLocation['latitude'], seekerLocation['longitude']);
+          } else {
+            print('Seeker not found in match');
+          }
+        }
+      } else {
+        print('Match document does not exist');
+      }
+    } catch (e) {
+      print('Error getting seeker location: $e');
+    }
+    return LatLng(0, 0);
+  }
+
+
+  Future<void> catchHidersWithinRadius(String matchName, double radius) async {
+    LatLng seekerLocation = await getSeekerLocation(matchName);
+    DocumentReference matchRef = instance.collection('matches').doc(matchName);
+    DocumentSnapshot matchSnapshot = await matchRef.get();
+    if (matchSnapshot.exists) {
+      Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+      if (matchData != null) {
+        List<dynamic> participants = matchData['participants'];
+        List<dynamic> updatedParticipants = [];
+        for (var participant in participants) {
+          if (participant['role'] == 'Hider') {
+            LatLng hiderLocation = LatLng(participant['location']['latitude'], participant['location']['longitude']);
+            double distance = getUserDistance(hiderLocation, seekerLocation);
+            if (distance > radius) {
+              // Keep the hider in the match if they are outside the radius
+              updatedParticipants.add(participant);
+            }
+            // If the hider is within the radius, they are not added to updatedParticipants, effectively removing them
+          } else {
+            // Keep all non-hiders in the match
+            updatedParticipants.add(participant);
+          }
+        }
+        // Update the match document with the modified participants list
+        await matchRef.update({'participants': updatedParticipants});
+      }
+    }
+  }
+
+    double getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
+    const int earthRadius = 6371000;
+    double lat1 = hiderLocation.latitude;
+    double lon1 = hiderLocation.longitude;
+    double lat2 = seekerLocation.latitude;
+    double lon2 = seekerLocation.longitude;
+    double dLat = degreesToRadians(lat2 - lat1);
+    double dLon = degreesToRadians(lon2 - lon1);
+
+    double distance = 2 * earthRadius * asin(sqrt((1-cos(dLat)) + cos(lat1) * cos(lat2) * (1-cos(dLon))/2));
+    return distance;
+  }
+
+  double degreesToRadians(double degrees) {
+    return degrees * pi / 180;
   }
 }

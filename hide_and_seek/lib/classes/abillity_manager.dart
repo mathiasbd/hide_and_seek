@@ -1,10 +1,17 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:math';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hide_and_seek/firebase/firestore_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hide_and_seek/firebase/firestore_controller.dart';
+import 'package:provider/provider.dart';
 
 
-class AbillityManager {
+class AbilityManager {
 
+  final FirestoreController firestoreController;
+
+  AbilityManager({required this.firestoreController});
+  
   void getHiderLocations() {
     // Make a LatLng field in the User class
     // constantly update the user's location in the database
@@ -12,22 +19,7 @@ class AbillityManager {
     // make points on the map for each hider
   }
 
-  bool catchHider(LatLng hiderLocation, LatLng seekerLocation, double radius) {
-    const int earthRadius = 6371000;
-    double lat1 = hiderLocation.latitude;
-    double lon1 = hiderLocation.longitude;
-    double lat2 = seekerLocation.latitude;
-    double lon2 = seekerLocation.longitude;
-    double dLat = degreesToRadians(lat2 - lat1);
-    double dLon = degreesToRadians(lon2 - lon1);
-    double distance = 2 * earthRadius * asin(sqrt((1-cos(dLat)) + cos(lat1) * cos(lat2) * (1-cos(dLon))/2));
-    if (distance <= radius) {
-      return true;
-    }
-    return false;
-  }
-
-  double degreesToRadians(double degrees) {
-    return degrees * pi / 180;
+  void catchHiders(String matchName, double radius) {
+    firestoreController.catchHidersWithinRadius(matchName, radius);
   }
 }

@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hide_and_seek/pages/maps_page.dart';
 import '../classes/abillity_manager.dart';
 import '../classes/User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hide_and_seek/firebase/firestore_controller.dart';
+import 'package:provider/provider.dart';
+import '../classes/abillity_manager.dart';
+
 
 class SeekerPage extends StatelessWidget {
 
-  final AbillityManager abillityManager = AbillityManager();
   final String matchName;
   User user;
+  late final AbilityManager abilityManager;
+
 
   SeekerPage({
     super.key,
@@ -17,6 +23,12 @@ class SeekerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
+    FirestoreController firestoreController =
+        FirestoreController(instance: firestore);
+
+    abilityManager = AbilityManager(firestoreController: firestoreController);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
@@ -75,7 +87,7 @@ class SeekerPage extends StatelessWidget {
                   children: <Widget>[
                     FloatingActionButton(
                       onPressed: () {
-                        abillityManager.getHiderLocations();
+                        abilityManager.getHiderLocations();
                       },
                       child: Icon(Icons.visibility, color: Colors.white),
                       backgroundColor: Colors.black,
@@ -84,16 +96,7 @@ class SeekerPage extends StatelessWidget {
                     SizedBox(width: 20),
                     FloatingActionButton(
                       onPressed: () {
-                        // abillityManager.getNoiseQue();
-                      },
-                      child: Icon(Icons.volume_up, color: Colors.white),
-                      backgroundColor: Colors.black,
-                      shape: CircleBorder(),
-                    ),
-                    SizedBox(width: 20),
-                    FloatingActionButton(
-                      onPressed: () {
-                        // abillityManager.catchHider();
+                        abilityManager.catchHiders(matchName, 10000000);
                       },
                       child: Icon(Icons.pan_tool, color: Colors.white),
                       backgroundColor: Colors.black,

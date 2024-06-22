@@ -19,7 +19,7 @@ class User {
 
     FirebaseFirestore firestore =
         Provider.of<FirebaseFirestore>(context, listen: false);
-    _firestoreController = FirestoreController(instance: firestore);
+    _firestoreController = FirestoreController(instance: firestore, );
   }
 
   String _generateUniqueId() {
