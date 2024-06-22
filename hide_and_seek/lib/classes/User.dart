@@ -28,16 +28,6 @@ class User {
     return '$name$randomNumber';
   }
 
-  // void useAbility() {
-  //   if (userType == UserType.Hider) {
-  //     print('$name uses hiding ability!');
-  //   } else if (userType == UserType.Seeker) {
-  //     print('$name uses seeking ability!');
-  //   } else {
-  //     print('$name has no assigned role yet.');
-  //   }
-  // }
-
   void printDetails() {
     print('Name: $name, ID: $id, Type: ${userType.toString() ?? "None"}');
   }

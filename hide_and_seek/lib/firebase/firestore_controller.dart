@@ -164,4 +164,40 @@ class FirestoreController extends ChangeNotifier {
       print('Error checking if user is seeker');
     }
   }
+
+  Future<void> changeUserLocation(matchName, user) async {
+    try {
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
+
+      DocumentSnapshot matchSnapshot = await matchRef.get();
+
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
+
+        if (matchData != null) {
+          List<dynamic> participants = matchData['participants'];
+
+          int index = participants
+              .indexWhere((participant) => participant['id'] == user.id);
+
+          if (index != -1) {
+            participants[index]['location'] = user.location;
+
+            await matchRef.update({
+              'participants': participants,
+            });
+            print('Participant location updated succesfully');
+          } else {
+            print('No participant found');
+          }
+        }
+      } else {
+        print('Match document reference does not exist');
+      }
+    } catch (e) {
+      print('Error updating participant location: $e');
+    }
+  }
 }

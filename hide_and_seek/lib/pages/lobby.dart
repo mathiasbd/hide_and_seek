@@ -86,14 +86,14 @@ class Lobby extends StatelessWidget {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HiderPage(user: user)),
+                          MaterialPageRoute(builder: (context) => HiderPage(user: user, matchName: matchName)),
                         );
                       });
                     } else if (participants[userIndex]['role'] == 'Seeker') {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => SeekerPage(user: user)),
+                          MaterialPageRoute(builder: (context) => SeekerPage(user: user, matchName: matchName)),
                         );
                       });
                     }
@@ -161,7 +161,7 @@ class Lobby extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => HiderPage(user: user)),
+                          builder: (context) => HiderPage(user: user, matchName: matchName)),
                     );
                   },
                   style: ElevatedButton.styleFrom(

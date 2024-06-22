@@ -6,10 +6,14 @@ import '../classes/User.dart';
 class SeekerPage extends StatelessWidget {
 
   final AbillityManager abillityManager = AbillityManager();
-  
+  final String matchName;
   User user;
 
-  SeekerPage({super.key, required this.user});
+  SeekerPage({
+    super.key,
+    required this.matchName,
+    required this.user,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,7 @@ class SeekerPage extends StatelessWidget {
                         width: 2,            
                       ),
                     ),
-                    child: MapsPage(),
+                    child: MapsPage(matchName: matchName, user: user),
                   ),
                 ),
                 Flexible(

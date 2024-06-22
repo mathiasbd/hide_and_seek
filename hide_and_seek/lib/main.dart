@@ -69,16 +69,18 @@ class MyApp extends StatelessWidget {
           case 'hider_page':
             final args = settings.arguments as Map<String, dynamic>;
             final user = args['user'] as User;
+            final matchName = args['matchName'];
 
             return MaterialPageRoute(
-              builder: (context) => HiderPage(user: user),
+              builder: (context) => HiderPage(user: user, matchName: matchName),
             );
             case 'seeker_page':
             final args = settings.arguments as Map<String, dynamic>;
             final user = args['user'] as User;
+            final matchName = args['matchName'];
 
             return MaterialPageRoute(
-              builder: (context) => SeekerPage(user: user),
+              builder: (context) => SeekerPage(user: user, matchName: matchName),
             );
           default:
             return null;

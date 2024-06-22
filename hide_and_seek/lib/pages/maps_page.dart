@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import '../classes/User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hide_and_seek/firebase/firestore_controller.dart';
+
 
 class MapsPage extends StatefulWidget {
-  const MapsPage({super.key});
+  final String matchName;
+  final User user;
 
+  const MapsPage({
+    super.key,
+    required this.matchName,
+    required this.user,
+  });
 
   @override
   _MapsPageState createState() => _MapsPageState();
@@ -12,7 +22,6 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> {
   final locationController = Location();
-
   LatLng? currentPos;
   BitmapDescriptor currentPosIcon = BitmapDescriptor.defaultMarker;
 
@@ -43,15 +52,14 @@ class _MapsPageState extends State<MapsPage> {
       }
     }
 
-    locationController.onLocationChanged.listen((currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
+    locationController.onLocationChanged.listen((currentLocation) async{
+      if (currentLocation.latitude != null && currentLocation.longitude != null) {
         setState(() {
           currentPos =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-              //user.updateLocation(currentPos);
         });
-        print(currentPos);
+        widget.user.location = currentPos;
+        await FirestoreController(instance: FirebaseFirestore.instance).changeUserLocation(widget.matchName, widget.user);
       }
     });
   }

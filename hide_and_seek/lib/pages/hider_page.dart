@@ -5,8 +5,13 @@ import '../classes/User.dart';
 class HiderPage extends StatelessWidget {
 
   final User user;
+  final String matchName;
 
-  const HiderPage({super.key, required this.user});
+  const HiderPage({
+    super.key,
+    required this.user,
+    required this.matchName,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +53,7 @@ class HiderPage extends StatelessWidget {
                         width: 2,            
                       ),
                     ),
-                    child: MapsPage(),
+                    child: MapsPage(matchName: matchName, user: user),
                   ),
                 ),
                 Flexible(
