@@ -85,12 +85,16 @@ class MapsPageState extends State<MapsPage> {
   }
 
   void addMarkers(List<LatLng> hiderLocation) {
+    markers = {};
+    debugPrint('addMarkers called');
     setState(() {
+      debugPrint('Setstate innit');
       for (var location in hiderLocation) {
         debugPrint('$location');
         markers.add(
           Marker(
             markerId: MarkerId(location.toString()),
+            icon:  BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
             position: location,
           ),
         );

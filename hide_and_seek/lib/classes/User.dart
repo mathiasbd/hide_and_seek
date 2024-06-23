@@ -57,7 +57,6 @@ class User {
     };
 
     await _firestoreController.changeUserLocation(matchName, toMap()..update('location', (_) => locationMap));
-    debugPrint('Location updated to $newLocation');
   }
 
   Map<String, dynamic> toMap() {

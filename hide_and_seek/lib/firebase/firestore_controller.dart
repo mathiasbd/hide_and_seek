@@ -240,7 +240,6 @@ class FirestoreController extends ChangeNotifier {
             await matchRef.update({
               'participants': participants,
             });
-            debugPrint('User location updated successfully');
           } else {
             debugPrint('User not found in match');
           }
