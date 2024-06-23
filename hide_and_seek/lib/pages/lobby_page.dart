@@ -11,7 +11,8 @@ class Lobby extends StatelessWidget {
   final String matchName;
   final User user;
 
-  const Lobby({Key? key, this.matchName = 'No Match', required this.user}) : super(key: key);
+  const Lobby({Key? key, this.matchName = 'No Match', required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class Lobby extends StatelessWidget {
 
     return PopScope(
       onPopInvoked: (bool didPop) async {
-        if(didPop) {
+        if (didPop) {
           await firestoreController.removeUserFromMatch(matchName, user);
           await checkAdminInMatch(firestoreController, matchName);
           return;
@@ -48,17 +49,21 @@ class Lobby extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, FirebaseFirestore firestore, FirestoreController firestoreController) {
+  Widget _buildBody(BuildContext context, FirebaseFirestore firestore,
+      FirestoreController firestoreController) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Expanded(child: _buildParticipantsList(context, firestore, firestoreController)),
+        Expanded(
+            child: _buildParticipantsList(
+                context, firestore, firestoreController)),
         _buildActionButton(context, firestoreController),
       ],
     );
   }
 
-  Widget _buildParticipantsList(BuildContext context, FirebaseFirestore firestore, FirestoreController firestoreController) {
+  Widget _buildParticipantsList(BuildContext context,
+      FirebaseFirestore firestore, FirestoreController firestoreController) {
     return StreamBuilder<DocumentSnapshot>(
       stream: firestore.collection('matches').doc(matchName).snapshots(),
       builder: (context, snapshot) {
@@ -70,19 +75,28 @@ class Lobby extends StatelessWidget {
           return const Center(child: Text('Match does not exist'));
         }
         var matchData = snapshot.data!.data() as Map<String, dynamic>;
-        var participants = List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
+        var participants =
+            List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
         var gameStarted = matchData['Match started'];
-        if(gameStarted) {
+        if (gameStarted) {
           if (user.role == 'Seeker') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SeekerPage(matchName: matchName, user: user)),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        SeekerPage(matchName: matchName, user: user)),
+              );
+            });
           } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HiderPage(matchName: matchName, user: user)),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        HiderPage(matchName: matchName, user: user)),
+              );
+            });
           }
         }
         if (participants.isEmpty) {
@@ -90,7 +104,6 @@ class Lobby extends StatelessWidget {
         } else {
           return _buildParticipantsListView(participants);
         }
-        
       },
     );
   }
@@ -136,20 +149,26 @@ class Lobby extends StatelessWidget {
 
   Future<void> checkAdminInMatch(firestoreController, matchName) async {
     bool isInMatch = await firestoreController.checkAdminInMatch(matchName);
-    if(!isInMatch) {
+    if (!isInMatch) {
       firestoreController.removeMatch(matchName);
     }
   }
 
-  Widget _buildActionButton(BuildContext context, FirestoreController firestoreController) {
+  Widget _buildActionButton(
+      BuildContext context, FirestoreController firestoreController) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 50.0), // Adjust the value to increase or decrease the distance
+      padding: const EdgeInsets.only(
+          bottom:
+              50.0), // Adjust the value to increase or decrease the distance
       child: customActionButton(
         context: context,
         text: getButtonText(),
-        onPressed: () => _handleActionButtonPressed(context, firestoreController),
+        onPressed: () =>
+            _handleActionButtonPressed(context, firestoreController),
         backgroundColor: Colors.black, // Optional if you want to customize
-        textStyle: const TextStyle(fontSize: 24.0, color: Colors.white), // Optional if you want to customize
+        textStyle: const TextStyle(
+            fontSize: 24.0,
+            color: Colors.white), // Optional if you want to customize
         width: 200.0, // Optional if you want to customize
         height: 75.0, // Optional if you want to customize
         borderRadius: 8.0, // Optional if you want to customize
@@ -167,19 +186,23 @@ class Lobby extends StatelessWidget {
     }
   }
 
-  void _handleActionButtonPressed(BuildContext context, FirestoreController firestoreController) {
+  void _handleActionButtonPressed(
+      BuildContext context, FirestoreController firestoreController) {
     if (user.userType == 'Admin') {
-      startMatch(context, matchName, user, firestoreController); // Pass context here
+      startMatch(
+          context, matchName, user, firestoreController); // Pass context here
     } else {
       user.changeReady(matchName, user);
     }
   }
 
-  void startMatch(BuildContext context, String matchName, User user, FirestoreController firestoreController) async {
+  void startMatch(BuildContext context, String matchName, User user,
+      FirestoreController firestoreController) async {
     bool isReady = await firestoreController.checkUsersReady(matchName, user);
     if (isReady) {
       await firestoreController.findRandomSeeker(matchName);
-      String updatedRole = await firestoreController.fetchUserRole(matchName, user);
+      String updatedRole =
+          await firestoreController.fetchUserRole(matchName, user);
       user.role = updatedRole;
       await firestoreController.changeGameStarted(matchName);
     }
