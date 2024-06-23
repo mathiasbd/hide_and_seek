@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
+import '../pages/home_screen.dart'; // Ensure you have a HomeScreen page in your project
 
 class GameoverPage extends StatelessWidget {
-  final List<dynamic> caughtHiders; // Step 1: Add caughtHiders variable
 
-  // Step 2: Modify constructor to accept caughtHiders
-  const GameoverPage({super.key, required this.caughtHiders});
+  const GameoverPage();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
-        title: const Text('Game Finish Page'),
+        title: const Text('Game Over'),
         centerTitle: true,
         titleTextStyle: const TextStyle(
           fontSize: 32.0,
@@ -23,17 +22,18 @@ class GameoverPage extends StatelessWidget {
         backgroundColor: Colors.blue[400],
       ),
       body: Center(
-        child: customActionButton(
-          context: context,
-          text: 'Restart Game',
+        child: ElevatedButton(
           onPressed: () {
-            // Logic to restart the game or navigate to the main menu
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()), // Navigate to HomeScreen
+            );
           },
-          backgroundColor: Colors.green,
-          textStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
-          width: 250.0,
-          height: 60.0,
-          borderRadius: 12.0,
+          child: const Text('Go to Home Screen'),
+          style: ElevatedButton.styleFrom(
+            textStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
+            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+          ),
         ),
       ),
     );

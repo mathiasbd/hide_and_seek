@@ -11,6 +11,7 @@ import 'dart:async';
 class SeekerPage extends StatefulWidget {
   final String matchName;
   final User user;
+  
 
   const SeekerPage({
     Key? key,
@@ -26,8 +27,38 @@ class SeekerPageState extends State<SeekerPage> {
   final GlobalKey<MapsPageState> mapsPageKey = GlobalKey<MapsPageState>();
   Timer? _timer;
   int _counter = 0;
+  StreamSubscription? _participantsSubscription;
 
+  @override
+  void initState() {
+    super.initState();
+    listenForCaughtParticipants();
+  }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _participantsSubscription?.cancel();
+    super.dispose();
+  }
+
+  void listenForCaughtParticipants() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    _participantsSubscription = firestore
+        .collection('matches')
+        .doc(widget.matchName)
+        .collection('participants')
+        .where('caught', isEqualTo: true)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => GameoverPage()),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +163,7 @@ class SeekerPageState extends State<SeekerPage> {
       ),
     );
   }
+
   void startTimer() {
     _counter = 300;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -144,6 +176,7 @@ class SeekerPageState extends State<SeekerPage> {
       });
     });
   }
+
   String getCounterText() {
     if (_counter > 0) {
       return '$_counter';
