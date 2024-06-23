@@ -322,35 +322,53 @@ class FirestoreController extends ChangeNotifier {
 
   // this methods keeps the hiders that are outside the radius and removes the hiders that are inside the radius
 
-  Future<List<dynamic>> catchHiders(String matchName) async {
-    double radius = 100000000;
-    LatLng seekerLocation = await getSeekerLocation(matchName);
+  Future<void> catchHiders(String matchName) async {
+    double radius = 100000000; // Assuming this is the catch radius
+    LatLng seekerLocation = await getSeekerLocation(matchName); // Get the seeker's location
     DocumentReference matchRef = instance.collection('matches').doc(matchName);
     DocumentSnapshot matchSnapshot = await matchRef.get();
-    List<dynamic> caughtHiders = [];
 
     if (matchSnapshot.exists) {
       Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
       if (matchData != null) {
         List<dynamic> participants = matchData['participants'];
-        List<dynamic> updatedParticipants = [];
         for (var participant in participants) {
           if (participant['role'] == 'Hider') {
             LatLng hiderLocation = LatLng(participant['location']['latitude'], participant['location']['longitude']);
             int distance = getUserDistance(hiderLocation, seekerLocation);
-            if (distance > radius) {
-              updatedParticipants.add(participant);
-            } else {
-              caughtHiders.add(participant);
+            if (distance <= radius) {
+              await markHiderAsCaught(matchName, participant['id']);
             }
           }
         }
-        await matchRef.update({'participants': updatedParticipants});
       }
     }
-    return caughtHiders;
   }
 
+    // This method updates the 'caught' status of a hider in the match
+    
+  Future<void> markHiderAsCaught(String matchName, String userId) async {
+    try {
+      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentSnapshot matchSnapshot = await matchRef.get();
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+        if (matchData != null) {
+          List<dynamic> participants = matchData['participants'];
+          int index = participants.indexWhere((participant) => participant['id'] == userId);
+          if (index != -1 && participants[index]['role'] == 'Hider') {
+            participants[index]['caught'] = true;
+            await matchRef.update({
+              'participants': participants,
+            });
+            debugPrint('Hider marked as caught successfully');
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error marking hider as caught: $e');
+    }
+  }
 
   // This method returns the number of players in a given match
 
@@ -405,3 +423,5 @@ class FirestoreController extends ChangeNotifier {
     return degrees * (pi / 180);
   }
 }
+
+

@@ -12,6 +12,7 @@ class User {
   String userType;
   String role = 'Hider';
   bool ready = false;
+  bool caught = false;
   late FirestoreController _firestoreController;
 
   User(this.name, BuildContext context, this.userType) {
@@ -66,6 +67,7 @@ class User {
       'ready': ready,
       'userType': userType,
       'role': role,
+      'caught': caught,
       'location': {
         'latitude': location?.latitude,
         'longitude': location?.longitude,
