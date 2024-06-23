@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import 'gameover_page.dart';
 
 class SeekerPage extends StatefulWidget {
   final String matchName;
@@ -120,7 +121,15 @@ class SeekerPageState extends State<SeekerPage> {
                         FloatingActionButton(
                           onPressed: () async {
                             await firestoreController.catchHiders(widget.matchName);
-                            
+                            int numberOfPlayers = await firestoreController.getNumberOfPlayers(widget.matchName);
+                            if(numberOfPlayers <= 1) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GameoverPage(),
+                                ),
+                              );
+                            }
                           },
                           backgroundColor: Colors.black,
                           shape: const CircleBorder(),
