@@ -51,15 +51,13 @@ class HiderPageState extends State<HiderPage> {
       if (participants != null) {
         int index = participants.indexWhere((participant) => participant['id'] == currentUserID);
         if (index != -1 && participants[index]['caught']) {
-          // Navigate and then remove the participant
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => GameoverPage(),
             ),
           ).then((_) {
-            // Remove the participant after navigation
-            firestoreController.removeParticipant(matchName, currentUserID);
+            firestoreController.removeUserFromMatch(matchName, user);
           });
         }
       }
