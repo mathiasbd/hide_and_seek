@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'maps_page.dart';
 import '../classes/User.dart';
 
-class HiderPage extends StatelessWidget {
+class HiderPage extends StatefulWidget {
   final User user;
   final String matchName;
 
@@ -14,6 +14,13 @@ class HiderPage extends StatelessWidget {
     required this.user,
     required this.matchName,
   });
+
+  @override
+  _HiderPageState createState() => _HiderPageState();
+}
+
+class _HiderPageState extends State<HiderPage> {
+  int? distanceToSeeker;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,7 @@ class HiderPage extends StatelessWidget {
       ),
       body: Flex(
         direction: Axis.vertical,
-        children: <Flexible>[
+        children: [
           Flexible(
             flex: 1,
             child: Container(color: Colors.blue[400]),
@@ -59,7 +66,7 @@ class HiderPage extends StatelessWidget {
                       ),
                     ),
                     child: MapsPage(
-                        matchName: matchName, user: user, key: GlobalKey()),
+                        matchName: widget.matchName, user: widget.user, key: GlobalKey()),
                   ),
                 ),
                 Flexible(
@@ -69,6 +76,23 @@ class HiderPage extends StatelessWidget {
               ],
             ),
           ),
+          if (distanceToSeeker != null) // Display distance if not null
+            Flexible(
+              flex: 2,
+              child: Container(
+                color: Colors.blue[400],
+                child: Center(
+                  child: Text(
+                    'Distance to seeker: $distanceToSeeker meters',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Flexible(
             flex: 3,
             child: Container(
@@ -76,8 +100,11 @@ class HiderPage extends StatelessWidget {
                 child: Center(
                   child: FloatingActionButton(
                     onPressed: () async {
-                      int distance = await firestoreController.distanceToSeeker(
-                          matchName, user);
+                      final int distance = await firestoreController.distanceToSeeker(
+                          widget.matchName, widget.user);
+                      setState(() {
+                        distanceToSeeker = distance;
+                      });
                     },
                     child: Icon(Icons.visibility, color: Colors.white),
                     backgroundColor: Colors.black,
