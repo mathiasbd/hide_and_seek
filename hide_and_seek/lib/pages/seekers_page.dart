@@ -113,7 +113,8 @@ class SeekerPageState extends State<SeekerPage> {
                     Column(
                       children: [
                         FloatingActionButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            await firestoreController.catchHiders(widget.matchName);
                           },
                           child: Icon(Icons.pan_tool, color: Colors.white),
                           backgroundColor: Colors.black,
