@@ -39,32 +39,33 @@ class HiderPageState extends State<HiderPage> {
   }
 
   void listenForCaught() {
-    String matchName = widget.matchName;
-    User user = widget.user;
-    String currentUserID = widget.user.id;
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false); // Fixed context usage
-    FirestoreController firestoreController =
-        FirestoreController(instance: firestore);
-    debugPrint('matchName: $matchName currentUserID: $currentUserID');
-    _caughtSubscription = FirebaseFirestore.instance.collection('matches').doc(matchName).snapshots().listen((event) async {
-      if (event.exists) {
-        List<dynamic>? participants = await firestoreController.getParticipants(matchName);
-        if (participants != null) {
-          int index = participants.indexWhere((participant) => participant['id'] == currentUserID); // Fixed user.id usage
-          if (index != -1) {
-            if (participants[index]['caught']) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GameoverPage(),
-                ),
-              );
-            }
-          }
+  String matchName = widget.matchName;
+  User user = widget.user;
+  String currentUserID = widget.user.id;
+  FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
+  FirestoreController firestoreController = FirestoreController(instance: firestore);
+  debugPrint('matchName: $matchName currentUserID: $currentUserID');
+  _caughtSubscription = FirebaseFirestore.instance.collection('matches').doc(matchName).snapshots().listen((event) async {
+    if (event.exists) {
+      List<dynamic>? participants = await firestoreController.getParticipants(matchName);
+      if (participants != null) {
+        int index = participants.indexWhere((participant) => participant['id'] == currentUserID);
+        if (index != -1 && participants[index]['caught']) {
+          // Navigate and then remove the participant
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GameoverPage(),
+            ),
+          ).then((_) {
+            // Remove the participant after navigation
+            firestoreController.removeParticipant(matchName, currentUserID);
+          });
         }
       }
-    });
-  }
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
