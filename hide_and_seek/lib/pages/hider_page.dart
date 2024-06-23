@@ -69,7 +69,9 @@ class _HiderPageState extends State<HiderPage> {
                     ),
                     // Step 2: Use the GlobalKey when creating the MapsPage widget
                     child: MapsPage(
-                        matchName: widget.matchName, user: widget.user, key: _mapsPageKey),
+                        matchName: widget.matchName,
+                        user: widget.user,
+                        key: _mapsPageKey),
                   ),
                 ),
                 Flexible(
@@ -79,14 +81,16 @@ class _HiderPageState extends State<HiderPage> {
               ],
             ),
           ),
-          if (distanceToSeeker != null) // Display distance if not null
-            Flexible(
-              flex: 2,
-              child: Container(
-                color: Colors.blue[400],
-                child: Center(
+          Flexible(
+            flex: 1,
+            child: Container(
+              color: Colors.blue[400],
+              child: Center(
+                // Use Visibility widget to show/hide the text
+                child: Visibility(
+                  visible: distanceToSeeker != null,
                   child: Text(
-                    'Distance to seeker: $distanceToSeeker meters',
+                    'Distance to seeker: ${distanceToSeeker ?? ''} meters',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -96,15 +100,16 @@ class _HiderPageState extends State<HiderPage> {
                 ),
               ),
             ),
+          ),
           Flexible(
-            flex: 3,
+            flex: 2,
             child: Container(
                 color: Colors.blue[400],
                 child: Center(
                   child: FloatingActionButton(
                     onPressed: () async {
-                      final int distance = await firestoreController.distanceToSeeker(
-                          widget.matchName, widget.user);
+                      final int distance = await firestoreController
+                          .distanceToSeeker(widget.matchName, widget.user);
                       setState(() {
                         distanceToSeeker = distance;
                       });
