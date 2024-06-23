@@ -327,7 +327,7 @@ class FirestoreController extends ChangeNotifier {
     LatLng seekerLocation = await getSeekerLocation(matchName);
     DocumentReference matchRef = instance.collection('matches').doc(matchName);
     DocumentSnapshot matchSnapshot = await matchRef.get();
-    List<dynamic> caughtHiders = []; // List to hold caught hiders
+    List<dynamic> caughtHiders = [];
 
     if (matchSnapshot.exists) {
       Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
@@ -341,14 +341,14 @@ class FirestoreController extends ChangeNotifier {
             if (distance > radius) {
               updatedParticipants.add(participant);
             } else {
-              caughtHiders.add(participant); // Add caught hider to the list
+              caughtHiders.add(participant);
             }
           }
         }
         await matchRef.update({'participants': updatedParticipants});
       }
     }
-    return caughtHiders; // Return the list of caught hiders
+    return caughtHiders;
   }
 
 

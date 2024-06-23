@@ -98,18 +98,18 @@ Widget _buildMatchItem(BuildContext context, QueryDocumentSnapshot<Object?> matc
   );
 }
 
-// join the match and navigate to the lobby page
+  // join the match and navigate to the lobby page
 
-void _joinMatch(BuildContext context, String matchName, FirestoreController firestoreController) {
-  firestoreController.joinMatch(matchName, user.toMap());
-  if (matchName.isNotEmpty) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Lobby(
-                matchName: matchName, user: user,
-              )),
-    );
+  void _joinMatch(BuildContext context, String matchName, FirestoreController firestoreController) {
+    firestoreController.joinMatch(matchName, user.toMap());
+    if (matchName.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Lobby(
+                  matchName: matchName, user: user,
+                )),
+      );
+    }
   }
-}
 }

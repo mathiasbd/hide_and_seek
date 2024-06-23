@@ -112,7 +112,7 @@ class SeekerPageState extends State<SeekerPage> {
                     SizedBox(width: 20),
                     FloatingActionButton(
                       onPressed: () {
-                        firestoreController.catchHiders(widget.matchName);
+                        navigateCaughtHiders();
                       },
                       child: Icon(Icons.pan_tool, color: Colors.white),
                       backgroundColor: Colors.black,
