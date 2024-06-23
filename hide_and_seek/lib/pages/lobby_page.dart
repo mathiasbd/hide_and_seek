@@ -83,7 +83,7 @@ class Lobby extends StatelessWidget {
         var participantRole = participants[index]['role'];
         var gameStarted = matchData['Match started'];
         
-        if (gameStarted) {
+        if (gameStarted && navigated == false) {
           navigated = true;
           if (participantRole == 'Seeker') {
             debugPrint('Changed page to seeker_page');
