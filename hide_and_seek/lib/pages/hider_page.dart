@@ -24,8 +24,7 @@ class HiderPage extends StatefulWidget {
 class HiderPageState extends State<HiderPage> {
   int? distanceToSeeker;
   final GlobalKey<MapsPageState> _mapsPageKey = GlobalKey<MapsPageState>();
-  StreamSubscription? _participantsSubscription;
-
+  StreamSubscription<DocumentSnapshot>? _caughtSubscription;
 
   @override
   void initState() {
@@ -35,7 +34,7 @@ class HiderPageState extends State<HiderPage> {
 
   @override
   void dispose() {
-    _participantsSubscription?.cancel();
+    _caughtSubscription?.cancel();
     super.dispose();
   }
 
@@ -43,22 +42,19 @@ class HiderPageState extends State<HiderPage> {
     String matchName = widget.matchName;
     String currentUserID = widget.user.id;
     debugPrint('matchName: $matchName currentUserID: $currentUserID');
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
-    FirestoreController firestoreController = FirestoreController(instance: firestore);
-
-    try {
-      List<dynamic>? participants = await firestoreController.getParticipants(matchName);
-
-      if (participants != null && participants.contains(currentUserID)) {
-        debugPrint('Caught!');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const GameoverPage()),
-        );
+    _caughtSubscription = FirebaseFirestore.instance.collection('matches').doc(matchName).snapshots().listen((event) {
+      if (event.exists) {
+        debugPrint('Caught: ${event.data()?['caught']}');
+        final List caught = event.data()?['caught'];
+        if (caught.contains(currentUserID)) {
+          debugPrint('Caught!');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => GameoverPage()),
+          );
+        }
       }
-    } catch (e) {
-      print("Error checking if caught: $e");
-    }
+    });
   }
 
   @override
