@@ -27,38 +27,13 @@ class SeekerPageState extends State<SeekerPage> {
   final GlobalKey<MapsPageState> mapsPageKey = GlobalKey<MapsPageState>();
   Timer? _timer;
   int _counter = 0;
-  StreamSubscription? _participantsSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    listenForCaughtParticipants();
-  }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _participantsSubscription?.cancel();
     super.dispose();
   }
 
-  void listenForCaughtParticipants() {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    _participantsSubscription = firestore
-        .collection('matches')
-        .doc(widget.matchName)
-        .collection('participants')
-        .where('caught', isEqualTo: true)
-        .snapshots()
-        .listen((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => GameoverPage()),
-        );
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
