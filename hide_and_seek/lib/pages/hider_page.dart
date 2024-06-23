@@ -39,11 +39,10 @@ class HiderPageState extends State<HiderPage> {
     super.dispose();
   }
 
-
   void listenForCaught() async {
     String matchName = widget.matchName;
     String currentUserID = widget.user.id;
-
+    debugPrint('matchName: $matchName currentUserID: $currentUserID');
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
     FirestoreController firestoreController = FirestoreController(instance: firestore);
 
@@ -51,6 +50,7 @@ class HiderPageState extends State<HiderPage> {
       List<dynamic>? participants = await firestoreController.getParticipants(matchName);
 
       if (participants != null && participants.contains(currentUserID)) {
+        debugPrint('Caught!');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const GameoverPage()),
