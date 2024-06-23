@@ -21,6 +21,8 @@ class HiderPage extends StatefulWidget {
 
 class _HiderPageState extends State<HiderPage> {
   int? distanceToSeeker;
+  // Step 1: Define a GlobalKey for the MapsPage widget
+  final GlobalKey<MapsPageState> _mapsPageKey = GlobalKey<MapsPageState>();
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +67,9 @@ class _HiderPageState extends State<HiderPage> {
                         width: 2,
                       ),
                     ),
+                    // Step 2: Use the GlobalKey when creating the MapsPage widget
                     child: MapsPage(
-                        matchName: widget.matchName, user: widget.user, key: GlobalKey()),
+                        matchName: widget.matchName, user: widget.user, key: _mapsPageKey),
                   ),
                 ),
                 Flexible(

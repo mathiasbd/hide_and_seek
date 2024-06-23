@@ -356,19 +356,40 @@ class FirestoreController extends ChangeNotifier {
 
   // this method gets the distance between the hider and the seeker (should be put in ability_manager)
 
-  int getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
-    const int earthRadius = 63636520;
-    double lat1 = hiderLocation.latitude;
-    double lon1 = hiderLocation.longitude;
-    double lat2 = seekerLocation.latitude;
-    double lon2 = seekerLocation.longitude;
-    double dLat = degreesToRadians(lat2 - lat1);
-    double dLon = degreesToRadians(lon2 - lon1);
+  // int getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
+  //   const int earthRadius = 63636520;
+  //   double lat1 = hiderLocation.latitude;
+  //   double lon1 = hiderLocation.longitude;
+  //   double lat2 = seekerLocation.latitude;
+  //   double lon2 = seekerLocation.longitude;
+  //   double dLat = degreesToRadians(lat2 - lat1);
+  //   double dLon = degreesToRadians(lon2 - lon1);
 
-    double distance = 2 *
-        earthRadius *
-        asin(sqrt(
-            (1 - cos(dLat)) + cos(lat1) * cos(lat2) * (1 - cos(dLon)) / 2));
+  //   double distance = 2 *
+  //       earthRadius *
+  //       asin(sqrt(
+  //           (1 - cos(dLat)) + cos(lat1) * cos(lat2) * (1 - cos(dLon)) / 2));
+  //   debugPrint(distance.toString());
+  //   return distance.round();
+  //}
+
+  int getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
+    const int earthRadius = 6363652;
+    double lat1 = degreesToRadians(hiderLocation.latitude);
+    double lon1 = degreesToRadians(hiderLocation.longitude);
+    double lat2 = degreesToRadians(seekerLocation.latitude);
+    double lon2 = degreesToRadians(seekerLocation.longitude);
+
+    double dLat = lat2 - lat1;
+    double dLon = lon2 - lon1;
+
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+              cos(lat1) * cos(lat2) *
+              sin(dLon / 2) * sin(dLon / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    double distance = earthRadius * c;
+    debugPrint(distance.toString());
     return distance.round();
   }
 
@@ -381,6 +402,6 @@ class FirestoreController extends ChangeNotifier {
   // this method converts degrees to radians (should be put in ability_manager)
 
   double degreesToRadians(double degrees) {
-    return degrees * pi / 180;
+    return degrees * (pi / 180);
   }
 }
