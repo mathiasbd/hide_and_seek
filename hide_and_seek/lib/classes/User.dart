@@ -29,35 +29,35 @@ class User {
   }
 
   void printDetails() {
-    print(
-        'Name: $name, Location: $location ID: $id, Type: ${userType.toString() ?? "None"}');
+    debugPrint(
+        'Name: $name, Location: $location ID: $id, Type: ${userType.toString()}');
   }
 
   Future<void> changeReady(matchName, user) async {
     ready = !ready;
     await _firestoreController.changeUserReady(matchName, user);
-    print('changed ready to $ready');
+    debugPrint('changed ready to $ready');
   }
 
   Future<void> forceUnready(matchName, user) async {
     if (ready == true) {
       ready = !ready;
-      print('Forced user to be unready');
+      debugPrint('Forced user to be unready');
     } else {
-      print('User was already undready');
+      debugPrint('User was already undready');
     }
   }
 
   Future<void> updateLocation(LatLng newLocation, String matchName) async {
-    this.location = newLocation;
+    location = newLocation;
 
     Map<String, dynamic> locationMap = {
       'latitude': newLocation.latitude,
       'longitude': newLocation.longitude,
     };
 
-    await _firestoreController.changeUserLocation(matchName, this.toMap()..update('location', (_) => locationMap));
-    print('Location updated to $newLocation');
+    await _firestoreController.changeUserLocation(matchName, toMap()..update('location', (_) => locationMap));
+    debugPrint('Location updated to $newLocation');
   }
 
   Map<String, dynamic> toMap() {

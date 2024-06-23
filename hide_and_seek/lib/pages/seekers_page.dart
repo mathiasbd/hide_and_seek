@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hide_and_seek/pages/maps_page.dart';
-import '../classes/ability_manager.dart';
 import '../classes/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
@@ -12,8 +11,6 @@ class SeekerPage extends StatelessWidget {
 
   final String matchName;
   User user;
-  late final AbilityManager abilityManager;
-
 
   SeekerPage({
     super.key,
@@ -26,8 +23,6 @@ class SeekerPage extends StatelessWidget {
     FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
     FirestoreController firestoreController =
         FirestoreController(instance: firestore);
-
-    abilityManager = AbilityManager(firestoreController: firestoreController);
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 188, 255),
@@ -87,8 +82,8 @@ class SeekerPage extends StatelessWidget {
                   children: <Widget>[
                     FloatingActionButton(
                       onPressed: () async {
-                        List<LatLng> hidersLocations = await abilityManager.getHidersLocations(matchName);
-                        //
+                        List<LatLng> hidersLocations = await firestoreController.getHidersLocations(matchName);
+
                       },
                       child: Icon(Icons.visibility, color: Colors.white),
                       backgroundColor: Colors.black,
@@ -97,7 +92,7 @@ class SeekerPage extends StatelessWidget {
                     SizedBox(width: 20),
                     FloatingActionButton(
                       onPressed: () {
-                        abilityManager.catchHiders(matchName);
+                        firestoreController.catchHiders(matchName);
                       },
                       child: Icon(Icons.pan_tool, color: Colors.white),
                       backgroundColor: Colors.black,

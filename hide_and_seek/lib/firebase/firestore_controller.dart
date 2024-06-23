@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../classes/ability_manager.dart';
 import '../classes/User.dart';
 
 class FirestoreController extends ChangeNotifier {
@@ -13,64 +12,60 @@ class FirestoreController extends ChangeNotifier {
 
   // this method creates a match in the Firestore database
 
-  Future<void> createMatch(matchName) async {
-    await instance
-        .collection('matches')
-        .doc(matchName)
-        .set({'Match Name': matchName, 'Match started': false}).then((_) {
-      print('Match created succesfully');
-    }).catchError((error) {
-      print('Error creating match: $error');
-    });
+  Future<void> createMatch(String matchName) async {
+    try {
+      await instance.collection('matches').doc(matchName).set({
+        'Match Name': matchName,
+        'Match started': false
+      });
+      debugPrint('Match created successfully');
+    } catch (error) {
+      debugPrint('Error creating match: $error');
+    }
   }
-
 
   // this method ensures that the user is added to the match with the correct ready status, if the user is an admin they will be added as ready by default
 
-  Future<void> joinMatch(matchName, user) async {
+  Future<void> joinMatch(String matchName, Map<String, dynamic> user) async {
     bool isAdmin = user['userType'] == 'Admin';
     Map<String, dynamic> userToAdd = isAdmin ? {...user, 'ready': true} : user;
 
-    await instance.collection('matches').doc(matchName).update({
-      'participants': FieldValue.arrayUnion([userToAdd]),
-    }).then((_) {
-      print('$user added to $matchName with ready status: ${isAdmin ? "true" : "false"}');
-    }).catchError((error) {
-      print('Failed to add user to match: $error');
-    });
+    try {
+      await instance.collection('matches').doc(matchName).update({
+        'participants': FieldValue.arrayUnion([userToAdd]),
+      });
+      debugPrint('$user added to $matchName with ready status: ${isAdmin ? "true" : "false"}');
+    } catch (error) {
+      debugPrint('Failed to add user to match: $error');
+    }
   }
 
   // this method removes the user from the match
 
-  Future<bool?> removeUserFromMatch(matchName, user) async {
+  Future<bool> removeUserFromMatch(String matchName, User user) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('matches')
-          .doc(matchName)
-          .update({
+      await instance.collection('matches').doc(matchName).update({
         'participants': FieldValue.arrayRemove([user.toMap()])
       });
-      print('User removed from the Firestore');
+      debugPrint('User removed from the Firestore');
+      return true;
     } catch (e) {
-      print('Error removing user: $e');
+      debugPrint('Error removing user: $e');
+      return false;
     }
-    return true;
   }
 
   // this method removes the match from the Firestore database
 
-  Future<bool?> removeMatch(matchName) async {
+  Future<bool> removeMatch(String matchName) async {
     try {
-      DocumentReference matchRef =
-          instance.collection('matches').doc(matchName);
-
-      await matchRef.delete();
-
-      print('$matchName deleted succesfully');
+      await instance.collection('matches').doc(matchName).delete();
+      debugPrint('$matchName deleted successfully');
+      return true;
     } catch (e) {
-      print('Error deleting match: $e');
+      debugPrint('Error deleting match: $e');
+      return false;
     }
-    return true;
   }
 
   // this method changes the ready status of the user
@@ -113,15 +108,12 @@ class FirestoreController extends ChangeNotifier {
 
   // this method changes the game started status to true
 
-  Future<void> changeGameStarted(matchName) async {
+  Future<void> changeGameStarted(String matchName) async {
     try {
-      DocumentReference matchRef =
-          instance.collection('matches').doc(matchName);
-
-      await matchRef.update({'Match started': true});
-      print('Game started succesfully');
+      await instance.collection('matches').doc(matchName).update({'Match started': true});
+      debugPrint('Game started successfully');
     } catch (e) {
-      print('Error starting the game: $e');
+      debugPrint('Error starting the game: $e');
     }
   }
 
@@ -164,28 +156,20 @@ class FirestoreController extends ChangeNotifier {
 
   // this method assigns the seeker role to a random user in the match
 
-  Future<void> findRandomSeeker(matchName) async {
+  Future<void> findRandomSeeker(String matchName) async {
     try {
-      DocumentReference matchRef =
-          instance.collection('matches').doc(matchName);
-
-      DocumentSnapshot matchSnapshot = await matchRef.get();
-
+      DocumentSnapshot matchSnapshot = await instance.collection('matches').doc(matchName).get();
       if (matchSnapshot.exists) {
-        Map<String, dynamic>? matchData =
-            matchSnapshot.data() as Map<String, dynamic>?;
-        if (matchData != null) {
-          List<dynamic> participants = matchData['participants'];
-          var random = Random();
-          var randomSeeker = random.nextInt(participants.length);
-          participants[randomSeeker]['role'] = 'Seeker';
-          await matchRef.update({
-            'participants': participants,
-          });
-        }
+        List<dynamic> participants = matchSnapshot['participants'];
+        var random = Random();
+        var randomSeeker = random.nextInt(participants.length);
+        participants[randomSeeker]['role'] = 'Seeker';
+        await instance.collection('matches').doc(matchName).update({
+          'participants': participants,
+        });
       }
     } catch (e) {
-      debugPrint('Error checking if user is seeker');
+      debugPrint('Error assigning seeker role: $e');
     }
   }
 
@@ -270,7 +254,7 @@ class FirestoreController extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error getting seeker location: $e');
     }
-    return LatLng(0, 0);
+    return const LatLng(0, 0);
   }
 
   // this method gets the locations of all the hiders in the match
@@ -300,7 +284,8 @@ class FirestoreController extends ChangeNotifier {
 
   // this methods keeps the hiders that are outside the radius and removes the hiders that are inside the radius
 
-  Future<void> catchHidersWithinRadius(String matchName, double radius) async {
+  Future<void> catchHiders(String matchName) async {
+    double radius = 1;
     LatLng seekerLocation = await getSeekerLocation(matchName);
     DocumentReference matchRef = instance.collection('matches').doc(matchName);
     DocumentSnapshot matchSnapshot = await matchRef.get();

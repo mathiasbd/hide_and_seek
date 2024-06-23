@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import '../classes/User.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hide_and_seek/firebase/firestore_controller.dart';
 
 class MapsPage extends StatefulWidget {
   final String matchName;
@@ -69,17 +67,6 @@ class _MapsPageState extends State<MapsPage> {
       currentPos = newLocation;
     });
     widget.user.updateLocation(newLocation, widget.matchName);
-  }
-
-  void addHiderMarkers(List<LatLng> hidersLocations) {
-    var newMarkers = hidersLocations.map((location) => Marker(
-          markerId: MarkerId('${location.latitude},${location.longitude}'),
-          position: location,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        ));
-    setState(() {
-      markers.addAll(newMarkers);
-    });
   }
 
   @override

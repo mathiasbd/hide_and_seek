@@ -95,14 +95,18 @@ class Lobby extends StatelessWidget {
   }
 
   Widget _buildParticipantStatusIndicator(Map<String, dynamic> participant) {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: getColor(participant['ready'], participant['userType']),
-        borderRadius: BorderRadius.circular(10),
-      ),
-    );
+    if (participant['userType'] == 'Admin') {
+      return Icon(Icons.star, color: Colors.yellow);
+    } else {
+      return Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: getColor(participant['ready'], participant['userType']),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      );
+    }
   }
 
   Widget _buildActionButton(BuildContext context, FirestoreController firestoreController) {
