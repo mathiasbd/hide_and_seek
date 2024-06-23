@@ -31,7 +31,7 @@ class FirestoreController extends ChangeNotifier {
       await instance.collection('matches').doc(matchName).update({
         'participants': FieldValue.arrayUnion([user]),
       });
-      //debugPrint('$user added to $matchName');
+      debugPrint('$user added to $matchName');
     } catch (error) {
       debugPrint('Failed to add user to match: $error');
     }

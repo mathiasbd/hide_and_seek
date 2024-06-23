@@ -64,6 +64,7 @@ class Lobby extends StatelessWidget {
 
   Widget _buildParticipantsList(BuildContext context,
       FirebaseFirestore firestore, FirestoreController firestoreController) {
+    bool navigated = false;
     return StreamBuilder<DocumentSnapshot>(
       stream: firestore.collection('matches').doc(matchName).snapshots(),
       builder: (context, snapshot) {
@@ -78,8 +79,10 @@ class Lobby extends StatelessWidget {
         var participants =
             List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
         var gameStarted = matchData['Match started'];
-        if (gameStarted) {
+        if (gameStarted && navigated == false) {
+          navigated = true;
           if (user.role == 'Seeker') {
+            debugPrint('Changed page to seeker_page');
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.push(
                 context,
@@ -88,7 +91,8 @@ class Lobby extends StatelessWidget {
                         SeekerPage(matchName: matchName, user: user)),
               );
             });
-          } else {
+          } else if(user.role == 'Hider') {
+            debugPrint('Changed page to hider_page');
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.push(
                 context,
