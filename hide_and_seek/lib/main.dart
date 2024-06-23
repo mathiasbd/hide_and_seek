@@ -9,18 +9,30 @@ import 'package:hide_and_seek/pages/create_match.dart';
 import 'package:hide_and_seek/pages/hider_page.dart';
 import 'package:hide_and_seek/pages/home_screen.dart';
 import 'package:hide_and_seek/pages/join_match.dart';
-import 'pages/lobby.dart';
+import 'pages/lobby_page.dart';
 import 'pages/seekers_page.dart';
 
+// Define route names as constants
+class Routes {
+  static const home = '/';
+  static const lobbyPage = 'lobby_page';
+  static const createMatch = 'create_match';
+  static const joinMatch = 'join_match';
+  static const hiderPage = 'hider_page';
+  static const seekerPage = 'seeker_page';
+}
+
+
+// initialize Firebase and Firestore and then run the app
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Firebase initialized successfully');
+    debugPrint('Firebase initialized successfully');
   } catch (e) {
-    print('Error initializing Firebase: $e');
+    debugPrint('Error initializing Firebase: $e');
   }
   runApp(
     Provider.value(
@@ -30,7 +42,8 @@ void main() async {
   );
 }
 
-@override
+// Define the main app widget
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -38,54 +51,56 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyApp',
-      initialRoute: '/',
+      initialRoute: Routes.home,
       routes: {
-        '/': (context) => const HomeScreen(),
+        Routes.home: (context) => HomeScreen(),
       },
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case 'lobby':
-            final args = settings.arguments as Map<String, dynamic>;
-            final matchName = args['matchName'];
-            final user = args['user'] as User;
-
-            return MaterialPageRoute(
-              builder: (context) => Lobby(matchName: matchName, user: user),
-            );
-          case 'create_match':
-            final args = settings.arguments as Map<String, dynamic>;
-            final user = args['user'] as User;
-
-            return MaterialPageRoute(
-              builder: (context) => CreateMatch(user: user),
-            );
-          case 'join_match':
-            final args = settings.arguments as Map<String, dynamic>;
-            final user = args['user'] as User;
-
-            return MaterialPageRoute(
-              builder: (context) => JoinMatch(user: user),
-            );
-          case 'hider_page':
-            final args = settings.arguments as Map<String, dynamic>;
-            final user = args['user'] as User;
-            final matchName = args['matchName'];
-
-            return MaterialPageRoute(
-              builder: (context) => HiderPage(user: user, matchName: matchName),
-            );
-            case 'seeker_page':
-            final args = settings.arguments as Map<String, dynamic>;
-            final user = args['user'] as User;
-            final matchName = args['matchName'];
-
-            return MaterialPageRoute(
-              builder: (context) => SeekerPage(user: user, matchName: matchName),
-            );
-          default:
-            return null;
-        }
-      }
+      onGenerateRoute: _generateRoute,
     );
+  }
+
+  // Generate routes based on route name and arguments
+
+  Route<dynamic>? _generateRoute(RouteSettings settings) {
+    if (settings.arguments is! Map<String, dynamic>) {
+      debugPrint('Invalid route arguments');
+      return null;
+    }
+    final args = settings.arguments as Map<String, dynamic>;
+
+    switch (settings.name) {
+      case Routes.lobbyPage:
+        final user = args['user'] as User;
+        return MaterialPageRoute(
+          builder: (context) => Lobby(matchName: args['matchName'], user: user),
+        );
+      case Routes.createMatch:
+      case Routes.joinMatch:
+      case Routes.hiderPage:
+      case Routes.seekerPage:
+        final user = args['user'] as User;
+        return MaterialPageRoute(
+          builder: (context) => _getPageForRoute(settings.name!, user, args['matchName']),
+        );
+      default:
+        return null;
+    }
+  }
+
+  // Helper function to return the correct page based on the route name
+
+  Widget _getPageForRoute(String routeName, User user, String? matchName) {
+    switch (routeName) {
+      case Routes.createMatch:
+        return CreateMatch(user: user);
+      case Routes.joinMatch:
+        return JoinMatch(user: user);
+      case Routes.hiderPage:
+        return HiderPage(user: user, matchName: matchName!);
+      case Routes.seekerPage:
+        return SeekerPage(user: user, matchName: matchName!);
+      default:
+        throw Exception('Invalid route: $routeName');
+    }
   }
 }

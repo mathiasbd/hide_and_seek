@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hide_and_seek/pages/maps_page.dart';
-import '../classes/abillity_manager.dart';
+import '../classes/ability_manager.dart';
 import '../classes/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
-import '../classes/abillity_manager.dart';
 
 
 class SeekerPage extends StatelessWidget {
@@ -86,8 +86,9 @@ class SeekerPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     FloatingActionButton(
-                      onPressed: () {
-                        abilityManager.getHiderLocations();
+                      onPressed: () async {
+                        List<LatLng> hidersLocations = await abilityManager.getHidersLocations(matchName);
+                        //
                       },
                       child: Icon(Icons.visibility, color: Colors.white),
                       backgroundColor: Colors.black,

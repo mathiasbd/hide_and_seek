@@ -3,77 +3,99 @@ import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/User.dart';
-import 'lobby.dart';
+import 'lobby_page.dart';
 
 class JoinMatch extends StatelessWidget {
   final User user;
 
   const JoinMatch({super.key, required this.user});
 
-  @override
-  Widget build(BuildContext context) {
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController firestoreController =
-        FirestoreController(instance: firestore);
-    final TextEditingController myController = TextEditingController();
+@override
+Widget build(BuildContext context) {
+  FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
+  FirestoreController firestoreController =
+      FirestoreController(instance: firestore);
 
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 95, 188, 255),
-      appBar: AppBar(
-        title: const Text('Join Match'),
-        centerTitle: true,
-        titleTextStyle: const TextStyle(
-          fontSize: 32.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-          fontFamily: 'Oswald',
+  return Scaffold(
+    backgroundColor: const Color.fromARGB(255, 95, 188, 255),
+    appBar: AppBar(
+      title: const Text('Join Match'),
+      centerTitle: true,
+      titleTextStyle: const TextStyle(
+        fontSize: 32.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+        fontFamily: 'Oswald',
+      ),
+      backgroundColor: Colors.blue[400],
+    ),
+    body: StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('matches').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        var matches = snapshot.data!.docs;
+
+        return ListView.builder(
+          itemCount: matches.length,
+          itemBuilder: (context, index) => _buildMatchItem(context, matches[index], firestoreController),
+        );
+      },
+    ),
+  );
+}
+
+// the button that will be displayed for each match (Fix so playercount is shown right now it is hardcoded to 0)
+
+Widget _buildMatchItem(BuildContext context, QueryDocumentSnapshot<Object?> match, FirestoreController firestoreController) {
+  var matchData = match.data() as Map<String, dynamic>;
+  String matchName = matchData['Match Name'] ?? 'Unknown Match';
+  String matchId = match.id;
+
+  return Card(
+    margin: const EdgeInsets.all(20.0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    child: InkWell(
+      onTap: () => _joinMatch(context, matchName, firestoreController),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              matchName,
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              'Players: 0',
+              style: const TextStyle(fontSize: 16.0),
+            ),
+          ],
         ),
-        backgroundColor: Colors.blue[400],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('matches').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    ),
+  );
+}
 
-          var matches = snapshot.data!.docs;
+// join the match and navigate to the lobby page
 
-          return ListView.builder(
-            itemCount: matches.length,
-            itemBuilder: (context, index) {
-              var match = matches[index];
-              var matchData = match.data() as Map<String, dynamic>;
-              String matchName = matchData['Match Name'] ?? 'Unknown Match';
-
-              return Container(
-                margin: const EdgeInsets.all(10.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    firestoreController.joinMatch(matchName, user.toMap());
-                    if (matchName.isNotEmpty) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Lobby(
-                                  matchName: matchName, user: user,
-                                )),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                  ),
-                  child: Text(
-                    matchName,
-                    style: const TextStyle(fontSize: 18.0, color: Colors.white),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ),
+void _joinMatch(BuildContext context, String matchName, FirestoreController firestoreController) {
+  firestoreController.joinMatch(matchName, user.toMap());
+  if (matchName.isNotEmpty) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Lobby(
+                matchName: matchName, user: user,
+              )),
     );
   }
+}
 }
