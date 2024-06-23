@@ -71,6 +71,20 @@ class Lobby extends StatelessWidget {
         }
         var matchData = snapshot.data!.data() as Map<String, dynamic>;
         var participants = List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
+        var gameStarted = matchData['Match started'];
+        if(gameStarted) {
+          if (user.role == 'Seeker') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SeekerPage(matchName: matchName, user: user)),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HiderPage(matchName: matchName, user: user)),
+            );
+          }
+        }
         if (participants.isEmpty) {
           return const Center(child: Text('No participants found'));
         } else {
@@ -168,18 +182,6 @@ class Lobby extends StatelessWidget {
       String updatedRole = await firestoreController.fetchUserRole(matchName, user);
       user.role = updatedRole;
       await firestoreController.changeGameStarted(matchName);
-    }
-
-    if (user.role == 'Seeker') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SeekerPage(matchName: matchName, user: user)),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HiderPage(matchName: matchName, user: user)),
-      );
     }
   }
 }
