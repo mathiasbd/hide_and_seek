@@ -39,14 +39,34 @@ class FirestoreController extends ChangeNotifier {
   // this method removes the user from the match
 
   Future<void> removeUserFromMatch(String matchName, User user) async {
-    try {
-      await instance.collection('matches').doc(matchName).update({
-        'participants': FieldValue.arrayRemove([user])});
-      debugPrint('User removed from the Firestore');
-    } catch (e) {
-      debugPrint('Error removing user: $e');
+  try {
+    DocumentReference matchRef = instance.collection('matches').doc(matchName);
+    DocumentSnapshot matchSnapshot = await matchRef.get();
+    
+    if (matchSnapshot.exists) {
+      List<dynamic> participants = matchSnapshot['participants'];
+
+      // Find the participant to remove
+      var participantToRemove = participants.firstWhere(
+        (participant) => participant['id'] == user.id,
+        orElse: () => null,
+      );
+
+      if (participantToRemove != null) {
+        await matchRef.update({
+          'participants': FieldValue.arrayRemove([participantToRemove])
+        });
+        debugPrint('User removed from the Firestore');
+      } else {
+        debugPrint('User not found in participants');
+      }
+    } else {
+      debugPrint('Match does not exist');
     }
+  } catch (e) {
+    debugPrint('Error removing user: $e');
   }
+}
 
   // this method removes the match from the Firestore database
 
