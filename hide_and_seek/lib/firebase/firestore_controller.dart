@@ -38,11 +38,10 @@ class FirestoreController extends ChangeNotifier {
 
   // this method removes the user from the match
 
-  Future<void> removeUserFromMatch(String matchName, User user) async {
+  Future<void> removeUserFromMatch(String matchName, String userID) async {
     try {
       await instance.collection('matches').doc(matchName).update({
-        'participants': FieldValue.arrayRemove([user.toMap()])
-      });
+        'participants': FieldValue.arrayRemove([userID])});
       debugPrint('User removed from the Firestore');
     } catch (e) {
       debugPrint('Error removing user: $e');
@@ -389,27 +388,6 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  // This method removes a participant from the match
-
-  Future<void> removeParticipant(String matchName, String userId) async {
-    try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
-      DocumentSnapshot matchSnapshot = await matchRef.get();
-      if (matchSnapshot.exists) {
-        Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
-        if (matchData != null) {
-          List<dynamic> participants = matchData['participants'];
-          participants.removeWhere((participant) => participant['id'] == userId);
-          await matchRef.update({
-            'participants': participants,
-          });
-          debugPrint('Participant removed successfully');
-        }
-      }
-    } catch (e) {
-      debugPrint('Error removing participant: $e');
-    }
-  }
 
   // this method gets the distance between the hider and the seeker
 
