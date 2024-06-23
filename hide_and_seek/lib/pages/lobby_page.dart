@@ -78,8 +78,27 @@ class Lobby extends StatelessWidget {
         var matchData = snapshot.data!.data() as Map<String, dynamic>;
         var participants =
             List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
+        int index = participants
+        .indexWhere((participant) => participant['id'] == user.id);
+        var participantRole = participants[index]['role'];
         var gameStarted = matchData['Match started'];
-        checkGameStarted(gameStarted, navigated, context, firestoreController);
+        
+        if (gameStarted) {
+          navigated = true;
+          if (participantRole == 'Seeker') {
+            debugPrint('Changed page to seeker_page');
+            Future.microtask(() => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SeekerPage(matchName: matchName, user: user)),
+            ));
+          } else if(participantRole == 'Hider') {
+            debugPrint('Changed page to hider_page');
+            Future.microtask(() => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HiderPage(matchName: matchName, user: user)),
+            ));
+          }
+        }
         
         if (participants.isEmpty) {
           return const Center(child: Text('No participants found'));
@@ -183,35 +202,9 @@ class Lobby extends StatelessWidget {
     bool isReady = await firestoreController.checkUsersReady(matchName, user);
     if (isReady) {
       await firestoreController.findRandomSeeker(matchName);
+      String updatedRole = await firestoreController.fetchUserRole(matchName, user);
+      user.role = updatedRole;
       await firestoreController.changeGameStarted(matchName);
     }
-  }
-  Future<void> checkGameStarted(gameStarted, navigated, context, firestoreController) async {
-    if (gameStarted && navigated == false) {
-          String updatedRole = await firestoreController.fetchUserRole(matchName, user);
-          user.role = updatedRole;
-          navigated = true;
-          if (user.role == 'Seeker') {
-            debugPrint('Changed page to seeker_page');
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        SeekerPage(matchName: matchName, user: user)),
-              );
-            });
-          } else if(user.role == 'Hider') {
-            debugPrint('Changed page to hider_page');
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        HiderPage(matchName: matchName, user: user)),
-              );
-            });
-          }
-        }
   }
 }
