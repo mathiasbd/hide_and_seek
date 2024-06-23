@@ -4,6 +4,8 @@ import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
 import 'maps_page.dart';
 import '../classes/User.dart';
+import 'gameover_page.dart';
+import 'dart:async';
 
 class HiderPage extends StatefulWidget {
   final User user;
@@ -16,13 +18,44 @@ class HiderPage extends StatefulWidget {
   });
 
   @override
-  _HiderPageState createState() => _HiderPageState();
+  HiderPageState createState() => HiderPageState();
 }
 
-class _HiderPageState extends State<HiderPage> {
+class HiderPageState extends State<HiderPage> {
   int? distanceToSeeker;
-  // Step 1: Define a GlobalKey for the MapsPage widget
   final GlobalKey<MapsPageState> _mapsPageKey = GlobalKey<MapsPageState>();
+  StreamSubscription? _participantsSubscription;
+
+
+  @override
+  void initState() {
+    super.initState();
+    listenForCaught();
+  }
+
+  @override
+  void dispose() {
+    _participantsSubscription?.cancel();
+    super.dispose();
+  }
+
+
+  void listenForCaught() async {
+    String matchName = "your_match_name_here";
+    String currentUserID = "current_user_id";
+
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
+    FirestoreController firestoreController = FirestoreController(instance: firestore);
+
+    List<dynamic>? participants = await firestoreController.getParticipants(matchName);
+
+    if (participants != null && participants.contains(currentUserID)) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const GameoverPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
