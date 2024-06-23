@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import '../custom_widgets.dart';
 import '../pages/home_screen.dart'; // Ensure you have a HomeScreen page in your project
 
 class GameoverPage extends StatelessWidget {
 
-  const GameoverPage();
+  const GameoverPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +28,11 @@ class GameoverPage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => HomeScreen()), // Navigate to HomeScreen
             );
           },
-          child: const Text('Go to Home Screen'),
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           ),
+          child: const Text('Go to Home Screen'),
         ),
       ),
     );

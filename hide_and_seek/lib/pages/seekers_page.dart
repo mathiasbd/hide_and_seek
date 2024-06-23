@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hide_and_seek/pages/gameover_page.dart';
 import 'package:hide_and_seek/pages/maps_page.dart';
 import '../classes/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,10 +13,10 @@ class SeekerPage extends StatefulWidget {
   
 
   const SeekerPage({
-    Key? key,
+    super.key,
     required this.matchName,
     required this.user,
-  }) : super(key: key);
+  });
 
   @override
   SeekerPageState createState() => SeekerPageState();
@@ -108,25 +107,25 @@ class SeekerPageState extends State<SeekerPage> {
                               startTimer();
                             }
                           },
-                          child: Icon(Icons.visibility, color: Colors.white),
                           backgroundColor: Colors.black,
-                          shape: CircleBorder(),
+                          shape: const CircleBorder(),
+                          child: const Icon(Icons.visibility, color: Colors.white),
                         ),
                         Text(getCounterText()),
                       ],
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Column(
                       children: [
                         FloatingActionButton(
                           onPressed: () async {
                             await firestoreController.catchHiders(widget.matchName);
                           },
-                          child: Icon(Icons.pan_tool, color: Colors.white),
                           backgroundColor: Colors.black,
-                          shape: CircleBorder(),
+                          shape: const CircleBorder(),
+                          child: const Icon(Icons.pan_tool, color: Colors.white),
                         ),
-                        Text('Kill'),
+                        const Text('Kill'),
                       ],
                     ),
                   ],
@@ -141,7 +140,7 @@ class SeekerPageState extends State<SeekerPage> {
 
   void startTimer() {
     _counter = 300;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_counter > 0) {
           _counter--;

@@ -38,20 +38,29 @@ class HiderPageState extends State<HiderPage> {
     super.dispose();
   }
 
-  void listenForCaught() async {
+  void listenForCaught() {
     String matchName = widget.matchName;
+    User user = widget.user;
     String currentUserID = widget.user.id;
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false); // Fixed context usage
+    FirestoreController firestoreController =
+        FirestoreController(instance: firestore);
     debugPrint('matchName: $matchName currentUserID: $currentUserID');
-    _caughtSubscription = FirebaseFirestore.instance.collection('matches').doc(matchName).snapshots().listen((event) {
+    _caughtSubscription = FirebaseFirestore.instance.collection('matches').doc(matchName).snapshots().listen((event) async {
       if (event.exists) {
-        debugPrint('Caught: ${event.data()?['caught']}');
-        final List caught = event.data()?['caught'];
-        if (caught.contains(currentUserID)) {
-          debugPrint('Caught!');
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => GameoverPage()),
-          );
+        List<dynamic>? participants = await firestoreController.getParticipants(matchName);
+        if (participants != null) {
+          int index = participants.indexWhere((participant) => participant['id'] == currentUserID); // Fixed user.id usage
+          if (index != -1) {
+            if (participants[index]['caught']) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GameoverPage(),
+                ),
+              );
+            }
+          }
         }
       }
     });
@@ -59,10 +68,9 @@ class HiderPageState extends State<HiderPage> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false); // Fixed context usage
     FirestoreController firestoreController =
         FirestoreController(instance: firestore);
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
@@ -101,7 +109,6 @@ class HiderPageState extends State<HiderPage> {
                         width: 2,
                       ),
                     ),
-                    // Step 2: Use the GlobalKey when creating the MapsPage widget
                     child: MapsPage(
                         matchName: widget.matchName,
                         user: widget.user,
@@ -120,7 +127,6 @@ class HiderPageState extends State<HiderPage> {
             child: Container(
               color: Colors.blue[400],
               child: Center(
-                // Use Visibility widget to show/hide the text
                 child: Visibility(
                   visible: distanceToSeeker != null,
                   child: Text(

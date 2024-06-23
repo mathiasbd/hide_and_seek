@@ -9,7 +9,7 @@ import '../custom_widgets.dart';
 class CreateMatch extends StatefulWidget {
   final User user;
 
-  const CreateMatch({Key? key, required this.user}) : super(key: key);
+  const CreateMatch({super.key, required this.user});
 
   @override
   _CreateMatchState createState() => _CreateMatchState();
@@ -52,7 +52,7 @@ class _CreateMatchState extends State<CreateMatch> {
       ),
       body: Center(
         child: isLoading
-            ? CircularProgressIndicator()
+            ? const CircularProgressIndicator()
             : Form(
                 key: _formKey,
                 child: Column(

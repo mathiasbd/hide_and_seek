@@ -6,6 +6,7 @@ import '../classes/User.dart';
 class MapsPage extends StatefulWidget {
   final String matchName;
   final User user;
+  @override
   final GlobalKey<MapsPageState> key;
 
   const MapsPage({

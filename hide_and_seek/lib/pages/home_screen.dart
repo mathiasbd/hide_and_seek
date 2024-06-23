@@ -80,13 +80,13 @@ class HomeScreen extends StatelessWidget {
                 validator: (value) => value!.isEmpty ? 'Please enter a name' : null,
               ),
             ),
-            SizedBox(height: 100.0),
+            const SizedBox(height: 100.0),
             customActionButton(
               context: context,
               text: 'Create Match',
               onPressed: () => handleNavigation('Admin'),
             ),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
             customActionButton(
               context: context,
               text: 'Join Match',

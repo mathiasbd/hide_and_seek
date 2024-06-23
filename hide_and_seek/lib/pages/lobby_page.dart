@@ -11,8 +11,7 @@ class Lobby extends StatelessWidget {
   final String matchName;
   final User user;
 
-  const Lobby({Key? key, this.matchName = 'No Match', required this.user})
-      : super(key: key);
+  const Lobby({super.key, this.matchName = 'No Match', required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +122,7 @@ class Lobby extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(participant['ready'] ? 'Ready' : 'Not Ready'),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 _buildParticipantStatusIndicator(participant),
               ],
             ),
@@ -135,7 +134,7 @@ class Lobby extends StatelessWidget {
 
   Widget _buildParticipantStatusIndicator(Map<String, dynamic> participant) {
     if (participant['userType'] == 'Admin') {
-      return Icon(Icons.star, color: Colors.yellow);
+      return const Icon(Icons.star, color: Colors.yellow);
     } else {
       return Container(
         width: 20,
