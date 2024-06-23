@@ -6,6 +6,7 @@ import '../classes/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 class SeekerPage extends StatefulWidget {
   final String matchName;
@@ -23,19 +24,10 @@ class SeekerPage extends StatefulWidget {
 
 class SeekerPageState extends State<SeekerPage> {
   final GlobalKey<MapsPageState> mapsPageKey = GlobalKey<MapsPageState>();
+  Timer? _timer;
+  int _counter = 0;
 
 
-  void navigateCaughtHiders() async {
-    List<dynamic> caughtHiders = await FirestoreController(instance: FirebaseFirestore.instance).catchHiders(widget.matchName);
-    if (caughtHiders.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GameoverPage(caughtHiders: caughtHiders),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,24 +91,36 @@ class SeekerPageState extends State<SeekerPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    FloatingActionButton(
-                      onPressed: () async {
-                        List<LatLng> hidersLocations = await firestoreController.getHidersLocations(widget.matchName);
-                        final mapsPageState = mapsPageKey.currentState;
-                        mapsPageState?.addMarkers(hidersLocations);
-                      },
-                      child: Icon(Icons.visibility, color: Colors.white),
-                      backgroundColor: Colors.black,
-                      shape: CircleBorder(),
+                    Column(
+                      children: [
+                        FloatingActionButton(
+                          onPressed: () async {
+                            if(_counter <= 0) {
+                              List<LatLng> hidersLocations = await firestoreController.getHidersLocations(widget.matchName);
+                              final mapsPageState = mapsPageKey.currentState;
+                              mapsPageState?.addMarkers(hidersLocations);
+                              startTimer();
+                            }
+                          },
+                          child: Icon(Icons.visibility, color: Colors.white),
+                          backgroundColor: Colors.black,
+                          shape: CircleBorder(),
+                        ),
+                        Text(getCounterText()),
+                      ],
                     ),
                     SizedBox(width: 20),
-                    FloatingActionButton(
-                      onPressed: () {
-                        navigateCaughtHiders();
-                      },
-                      child: Icon(Icons.pan_tool, color: Colors.white),
-                      backgroundColor: Colors.black,
-                      shape: CircleBorder(),
+                    Column(
+                      children: [
+                        FloatingActionButton(
+                          onPressed: () {
+                          },
+                          child: Icon(Icons.pan_tool, color: Colors.white),
+                          backgroundColor: Colors.black,
+                          shape: CircleBorder(),
+                        ),
+                        Text('Kill'),
+                      ],
                     ),
                   ],
                 ),
@@ -126,5 +130,24 @@ class SeekerPageState extends State<SeekerPage> {
         ],
       ),
     );
+  }
+  void startTimer() {
+    _counter = 300;
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_counter > 0) {
+          _counter--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+  String getCounterText() {
+    if (_counter > 0) {
+      return '$_counter';
+    } else {
+      return 'Look';
+    }
   }
 }
