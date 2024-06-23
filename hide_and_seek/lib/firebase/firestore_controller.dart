@@ -354,24 +354,27 @@ class FirestoreController extends ChangeNotifier {
     }
   }
 
-  // this method gets the distance between the hider and the seeker (should be put in ability_manager)
 
-  // int getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
-  //   const int earthRadius = 63636520;
-  //   double lat1 = hiderLocation.latitude;
-  //   double lon1 = hiderLocation.longitude;
-  //   double lat2 = seekerLocation.latitude;
-  //   double lon2 = seekerLocation.longitude;
-  //   double dLat = degreesToRadians(lat2 - lat1);
-  //   double dLon = degreesToRadians(lon2 - lon1);
+  // This method returns the number of players in a given match
 
-  //   double distance = 2 *
-  //       earthRadius *
-  //       asin(sqrt(
-  //           (1 - cos(dLat)) + cos(lat1) * cos(lat2) * (1 - cos(dLon)) / 2));
-  //   debugPrint(distance.toString());
-  //   return distance.round();
-  //}
+  Future<int> getNumberOfPlayersInMatch(String matchName) async {
+    try {
+      DocumentSnapshot matchSnapshot = await instance.collection('matches').doc(matchName).get();
+      if (matchSnapshot.exists) {
+        Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+        if (matchData != null && matchData.containsKey('participants')) {
+          List<dynamic> participants = matchData['participants'];
+          return participants.length;
+        }
+      }
+      return 0;
+    } catch (e) {
+      debugPrint('Error getting number of players in match: $e');
+      return 0;
+    }
+  }
+
+  // this method gets the distance between the hider and the seeker
 
   int getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
     const int earthRadius = 6363652;
@@ -399,7 +402,7 @@ class FirestoreController extends ChangeNotifier {
     return getUserDistance(user.location!, seekerPos);
   }
 
-  // this method converts degrees to radians (should be put in ability_manager)
+  // this method converts degrees to radians
 
   double degreesToRadians(double degrees) {
     return degrees * (pi / 180);
