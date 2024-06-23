@@ -322,42 +322,39 @@ class FirestoreController extends ChangeNotifier {
 
   // this methods keeps the hiders that are outside the radius and removes the hiders that are inside the radius
 
-  Future<void> catchHiders(String matchName) async {
-    double radius = 100;
+  Future<List<dynamic>> catchHiders(String matchName) async {
+    double radius = 100000000;
     LatLng seekerLocation = await getSeekerLocation(matchName);
     DocumentReference matchRef = instance.collection('matches').doc(matchName);
     DocumentSnapshot matchSnapshot = await matchRef.get();
+    List<dynamic> caughtHiders = []; // List to hold caught hiders
+
     if (matchSnapshot.exists) {
-      Map<String, dynamic>? matchData =
-          matchSnapshot.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
       if (matchData != null) {
         List<dynamic> participants = matchData['participants'];
         List<dynamic> updatedParticipants = [];
         for (var participant in participants) {
           if (participant['role'] == 'Hider') {
-            LatLng hiderLocation = LatLng(participant['location']['latitude'],
-                participant['location']['longitude']);
+            LatLng hiderLocation = LatLng(participant['location']['latitude'], participant['location']['longitude']);
             int distance = getUserDistance(hiderLocation, seekerLocation);
             if (distance > radius) {
-              // Keep the hider in the match if they are outside the radius
               updatedParticipants.add(participant);
+            } else {
+              caughtHiders.add(participant); // Add caught hider to the list
             }
-            // If the hider is within the radius, they are not added to updatedParticipants, effectively removing them
-          } else {
-            // Keep all non-hiders in the match
-            //updatedParticipants.add(participant);
           }
         }
-        // Update the match document with the modified participants list
         await matchRef.update({'participants': updatedParticipants});
       }
     }
+    return caughtHiders; // Return the list of caught hiders
   }
 
 
   // This method returns the number of players in a given match
 
-  Future<int> getNumberOfPlayersInMatch(String matchName) async {
+  Future<int> getNumberOfPlayers(String matchName) async {
     try {
       DocumentSnapshot matchSnapshot = await instance.collection('matches').doc(matchName).get();
       if (matchSnapshot.exists) {

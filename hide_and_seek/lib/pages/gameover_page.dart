@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
 
-class GameFinishPage extends StatelessWidget {
-  const GameFinishPage({super.key});
+class GameoverPage extends StatelessWidget {
+  final List<dynamic> caughtHiders; // Step 1: Add caughtHiders variable
+
+  // Step 2: Modify constructor to accept caughtHiders
+  const GameoverPage({super.key, required this.caughtHiders});
 
   @override
   Widget build(BuildContext context) {

@@ -33,6 +33,7 @@ class _HiderPageState extends State<HiderPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Hider'),
         centerTitle: true,
         titleTextStyle: const TextStyle(

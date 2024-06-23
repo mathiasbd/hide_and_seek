@@ -57,6 +57,9 @@ Widget _buildMatchItem(BuildContext context, QueryDocumentSnapshot<Object?> matc
   String matchName = matchData['Match Name'] ?? 'Unknown Match';
   String matchId = match.id;
 
+  // Assuming FirestoreController has a method getNumberOfPlayers(matchId) that returns Future<int>
+  Future<int> numberOfPlayers = firestoreController.getNumberOfPlayers(matchName);
+
   return Card(
     margin: const EdgeInsets.all(20.0),
     shape: RoundedRectangleBorder(
@@ -73,9 +76,20 @@ Widget _buildMatchItem(BuildContext context, QueryDocumentSnapshot<Object?> matc
               matchName,
               style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            Text(
-              'Players: 0',
-              style: const TextStyle(fontSize: 16.0),
+            FutureBuilder<int>(
+              future: numberOfPlayers,
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text('Loading players...');
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return Text(
+                    'Players: ${snapshot.data}',
+                    style: const TextStyle(fontSize: 16.0),
+                  );
+                }
+              },
             ),
           ],
         ),
