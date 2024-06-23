@@ -77,6 +77,9 @@ class Lobby extends StatelessWidget {
         var matchData = snapshot.data!.data() as Map<String, dynamic>;
         var participants =
             List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
+        if(participants.isEmpty) {
+          return const Center(child: Text('No participants found'));
+        }
         int index = participants
         .indexWhere((participant) => participant['id'] == user.id);
         var participantRole = participants[index]['role'];

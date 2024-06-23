@@ -186,7 +186,7 @@ class FirestoreController extends ChangeNotifier {
     try {
       List<dynamic>? participants = await getParticipants(matchName);
 
-      if (participants != null) {
+      if (participants != null && participants.isNotEmpty) {
         for (int i = 0; i < participants.length; i++) {
           print(i);
           if (participants[i]['userType'] == 'Admin') {
