@@ -121,15 +121,6 @@ class SeekerPageState extends State<SeekerPage> {
                         FloatingActionButton(
                           onPressed: () async {
                             await firestoreController.catchHiders(widget.matchName);
-                            int numberOfPlayers = await firestoreController.getNumberOfPlayers(widget.matchName);
-                            if(numberOfPlayers <= 1) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => GameoverPage(),
-                                ),
-                              );
-                            }
                           },
                           backgroundColor: Colors.black,
                           shape: const CircleBorder(),
