@@ -24,6 +24,7 @@ class Routes {
 
 
 // initialize Firebase and Firestore and then run the app
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
