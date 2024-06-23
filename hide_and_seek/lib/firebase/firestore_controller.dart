@@ -9,15 +9,14 @@ class FirestoreController extends ChangeNotifier {
 
   FirestoreController({required this.instance});
 
-
   // this method creates a match in the Firestore database
 
   Future<void> createMatch(String matchName) async {
     try {
-      await instance.collection('matches').doc(matchName).set({
-        'Match Name': matchName,
-        'Match started': false
-      });
+      await instance
+          .collection('matches')
+          .doc(matchName)
+          .set({'Match Name': matchName, 'Match started': false});
       debugPrint('Match created successfully');
     } catch (error) {
       debugPrint('Error creating match: $error');
@@ -60,6 +59,7 @@ class FirestoreController extends ChangeNotifier {
       debugPrint('Error deleting match: $e');
     }
   }
+
 // This method gets a list of participants in the match
   Future<List<dynamic>?> getParticipants(matchName) async {
     try {
@@ -96,15 +96,15 @@ class FirestoreController extends ChangeNotifier {
 
       List<dynamic>? participants = await getParticipants(matchName);
 
-      if(participants!=null) {
+      if (participants != null) {
         int index = participants
-        .indexWhere((participant) => participant['id'] == user.id);
+            .indexWhere((participant) => participant['id'] == user.id);
         if (index != -1) {
           participants[index]['ready'] = user.ready;
           await matchRef.update({
-              'participants': participants,
-            });
-            print('Participant ready status updated succesfully');
+            'participants': participants,
+          });
+          print('Participant ready status updated succesfully');
         }
       }
     } catch (e) {
@@ -116,7 +116,10 @@ class FirestoreController extends ChangeNotifier {
 
   Future<void> changeGameStarted(String matchName) async {
     try {
-      await instance.collection('matches').doc(matchName).update({'Match started': true});
+      await instance
+          .collection('matches')
+          .doc(matchName)
+          .update({'Match started': true});
       debugPrint('Game started successfully');
     } catch (e) {
       debugPrint('Error starting the game: $e');
@@ -164,10 +167,10 @@ class FirestoreController extends ChangeNotifier {
     try {
       List<dynamic>? participants = await getParticipants(matchName);
 
-      if(participants!=null) {
-        for(int i = 0; i < participants.length;i++) {
+      if (participants != null) {
+        for (int i = 0; i < participants.length; i++) {
           print(i);
-          if(participants[i]['userType']=='Admin') {
+          if (participants[i]['userType'] == 'Admin') {
             return true;
           }
         }
@@ -185,7 +188,8 @@ class FirestoreController extends ChangeNotifier {
 
   Future<void> findRandomSeeker(String matchName) async {
     try {
-      DocumentSnapshot matchSnapshot = await instance.collection('matches').doc(matchName).get();
+      DocumentSnapshot matchSnapshot =
+          await instance.collection('matches').doc(matchName).get();
       if (matchSnapshot.exists) {
         List<dynamic> participants = matchSnapshot['participants'];
         var random = Random();
@@ -204,13 +208,17 @@ class FirestoreController extends ChangeNotifier {
 
   Future<String> fetchUserRole(String matchName, User user) async {
     try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
       DocumentSnapshot matchSnapshot = await matchRef.get();
       if (matchSnapshot.exists) {
-        Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
-          var updatedUser = participants.firstWhere((participant) => participant['id'] == user.id, orElse: () => null);
+          var updatedUser = participants.firstWhere(
+              (participant) => participant['id'] == user.id,
+              orElse: () => null);
           return updatedUser != null ? updatedUser['role'] : user.role;
         }
       }
@@ -264,12 +272,13 @@ class FirestoreController extends ChangeNotifier {
             matchSnapshot.data() as Map<String, dynamic>?;
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
-          int index = participants.indexWhere(
-              (participant) => participant['role'] == 'Seeker');
+          int index = participants
+              .indexWhere((participant) => participant['role'] == 'Seeker');
           if (index != -1) {
             Map<String, dynamic> seekerLocation =
                 participants[index]['location'];
-            return LatLng(seekerLocation['latitude'], seekerLocation['longitude']);
+            return LatLng(
+                seekerLocation['latitude'], seekerLocation['longitude']);
           } else {
             debugPrint('Seeker not found in match');
           }
@@ -288,15 +297,18 @@ class FirestoreController extends ChangeNotifier {
   Future<List<LatLng>> getHidersLocations(String matchName) async {
     List<LatLng> hidersLocations = [];
     try {
-      DocumentReference matchRef = instance.collection('matches').doc(matchName);
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
       DocumentSnapshot matchSnapshot = await matchRef.get();
       if (matchSnapshot.exists) {
-        Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+        Map<String, dynamic>? matchData =
+            matchSnapshot.data() as Map<String, dynamic>?;
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
           for (var participant in participants) {
             if (participant['role'] == 'Hider') {
-              LatLng hiderLocation = LatLng(participant['location']['latitude'], participant['location']['longitude']);
+              LatLng hiderLocation = LatLng(participant['location']['latitude'],
+                  participant['location']['longitude']);
               hidersLocations.add(hiderLocation);
             }
           }
@@ -316,14 +328,16 @@ class FirestoreController extends ChangeNotifier {
     DocumentReference matchRef = instance.collection('matches').doc(matchName);
     DocumentSnapshot matchSnapshot = await matchRef.get();
     if (matchSnapshot.exists) {
-      Map<String, dynamic>? matchData = matchSnapshot.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? matchData =
+          matchSnapshot.data() as Map<String, dynamic>?;
       if (matchData != null) {
         List<dynamic> participants = matchData['participants'];
         List<dynamic> updatedParticipants = [];
         for (var participant in participants) {
           if (participant['role'] == 'Hider') {
-            LatLng hiderLocation = LatLng(participant['location']['latitude'], participant['location']['longitude']);
-            double distance = getUserDistance(hiderLocation, seekerLocation);
+            LatLng hiderLocation = LatLng(participant['location']['latitude'],
+                participant['location']['longitude']);
+            int distance = getUserDistance(hiderLocation, seekerLocation);
             if (distance > radius) {
               // Keep the hider in the match if they are outside the radius
               updatedParticipants.add(participant);
@@ -342,8 +356,8 @@ class FirestoreController extends ChangeNotifier {
 
   // this method gets the distance between the hider and the seeker (should be put in ability_manager)
 
-    double getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
-    const int earthRadius = 6371000;
+  int getUserDistance(LatLng hiderLocation, LatLng seekerLocation) {
+    const int earthRadius = 63636520;
     double lat1 = hiderLocation.latitude;
     double lon1 = hiderLocation.longitude;
     double lat2 = seekerLocation.latitude;
@@ -351,8 +365,17 @@ class FirestoreController extends ChangeNotifier {
     double dLat = degreesToRadians(lat2 - lat1);
     double dLon = degreesToRadians(lon2 - lon1);
 
-    double distance = 2 * earthRadius * asin(sqrt((1-cos(dLat)) + cos(lat1) * cos(lat2) * (1-cos(dLon))/2));
-    return distance;
+    double distance = 2 *
+        earthRadius *
+        asin(sqrt(
+            (1 - cos(dLat)) + cos(lat1) * cos(lat2) * (1 - cos(dLon)) / 2));
+    return distance.round();
+  }
+
+  Future<int> distanceToSeeker(String matchName, User user) async {
+    LatLng seekerPos = await getSeekerLocation(matchName);
+
+    return getUserDistance(user.location!, seekerPos);
   }
 
   // this method converts degrees to radians (should be put in ability_manager)
@@ -360,6 +383,4 @@ class FirestoreController extends ChangeNotifier {
   double degreesToRadians(double degrees) {
     return degrees * pi / 180;
   }
-
-
 }
