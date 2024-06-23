@@ -33,8 +33,6 @@ class SeekerPageState extends State<SeekerPage> {
     super.dispose();
   }
 
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +120,7 @@ class SeekerPageState extends State<SeekerPage> {
                         FloatingActionButton(
                           onPressed: () async {
                             await firestoreController.catchHiders(widget.matchName);
-
+                            
                           },
                           backgroundColor: Colors.black,
                           shape: const CircleBorder(),
@@ -161,6 +159,4 @@ class SeekerPageState extends State<SeekerPage> {
       return 'Look';
     }
   }
-
-
 }

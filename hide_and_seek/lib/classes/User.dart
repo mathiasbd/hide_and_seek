@@ -49,6 +49,10 @@ class User {
     }
   }
 
+  Future<void> changeCaught() async {
+    caught = !caught;
+  }
+
   Future<void> updateLocation(LatLng newLocation, String matchName) async {
     location = newLocation;
 

@@ -56,8 +56,9 @@ class HiderPageState extends State<HiderPage> {
             MaterialPageRoute(
               builder: (context) => GameoverPage(),
             ),
-          ).then((_) {
-            firestoreController.removeUserFromMatch(matchName, currentUserID);
+          ).then((_) async {
+            await user.changeCaught();
+            await firestoreController.removeUserFromMatch(matchName, user);
           });
         }
       }

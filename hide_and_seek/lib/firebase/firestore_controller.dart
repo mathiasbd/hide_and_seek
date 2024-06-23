@@ -38,10 +38,10 @@ class FirestoreController extends ChangeNotifier {
 
   // this method removes the user from the match
 
-  Future<void> removeUserFromMatch(String matchName, String userID) async {
+  Future<void> removeUserFromMatch(String matchName, User user) async {
     try {
       await instance.collection('matches').doc(matchName).update({
-        'participants': FieldValue.arrayRemove([userID])});
+        'participants': FieldValue.arrayRemove([user])});
       debugPrint('User removed from the Firestore');
     } catch (e) {
       debugPrint('Error removing user: $e');
