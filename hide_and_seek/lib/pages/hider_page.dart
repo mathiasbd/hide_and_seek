@@ -53,7 +53,7 @@ class HiderPage extends StatelessWidget {
                         width: 2,            
                       ),
                     ),
-                    child: MapsPage(matchName: matchName, user: user),
+                    child: MapsPage(matchName: matchName, user: user, key: GlobalKey()),
                   ),
                 ),
                 Flexible(

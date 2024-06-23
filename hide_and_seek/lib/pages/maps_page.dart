@@ -6,18 +6,19 @@ import '../classes/User.dart';
 class MapsPage extends StatefulWidget {
   final String matchName;
   final User user;
+  final GlobalKey<MapsPageState> key;
 
   const MapsPage({
-    super.key,
     required this.matchName,
     required this.user,
-  });
+    required this.key,
+  }) : super(key: key);
 
   @override
-  _MapsPageState createState() => _MapsPageState();
+  MapsPageState createState() => MapsPageState();
 }
 
-class _MapsPageState extends State<MapsPage> {
+class MapsPageState extends State<MapsPage> {
   final locationController = Location();
   LatLng? currentPos;
   BitmapDescriptor? currentPosIcon;
@@ -81,5 +82,19 @@ class _MapsPageState extends State<MapsPage> {
                     icon: currentPosIcon ?? BitmapDescriptor.defaultMarker,
                     position: currentPos!)),
               ));
+  }
+
+  void addMarkers(List<LatLng> hiderLocation) {
+    setState(() {
+      for (var location in hiderLocation) {
+        debugPrint('$location');
+        markers.add(
+          Marker(
+            markerId: MarkerId(location.toString()),
+            position: location,
+          ),
+        );
+      }
+    });
   }
 }

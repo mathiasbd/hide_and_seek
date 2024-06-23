@@ -11,6 +11,7 @@ class SeekerPage extends StatelessWidget {
 
   final String matchName;
   User user;
+  final GlobalKey<MapsPageState> mapsPageKey = GlobalKey<MapsPageState>();
 
   SeekerPage({
     super.key,
@@ -62,7 +63,7 @@ class SeekerPage extends StatelessWidget {
                         width: 2,            
                       ),
                     ),
-                    child: MapsPage(matchName: matchName, user: user),
+                    child: MapsPage(matchName: matchName, user: user, key: GlobalKey()),
                   ),
                 ),
                 Flexible(
@@ -83,6 +84,9 @@ class SeekerPage extends StatelessWidget {
                     FloatingActionButton(
                       onPressed: () async {
                         List<LatLng> hidersLocations = await firestoreController.getHidersLocations(matchName);
+                        final mapsPageKey = GlobalKey<MapsPageState>();
+                        final mapsPageState = mapsPageKey.currentState;
+                        mapsPageState?.addMarkers(hidersLocations);
 
                       },
                       child: Icon(Icons.visibility, color: Colors.white),
