@@ -27,14 +27,11 @@ class FirestoreController extends ChangeNotifier {
   // this method ensures that the user is added to the match with the correct ready status, if the user is an admin they will be added as ready by default
 
   Future<void> joinMatch(String matchName, Map<String, dynamic> user) async {
-    bool isAdmin = user['userType'] == 'Admin';
-    Map<String, dynamic> userToAdd = isAdmin ? {...user, 'ready': true} : user;
-
     try {
       await instance.collection('matches').doc(matchName).update({
-        'participants': FieldValue.arrayUnion([userToAdd]),
+        'participants': FieldValue.arrayUnion([user]),
       });
-      debugPrint('$user added to $matchName with ready status: ${isAdmin ? "true" : "false"}');
+      //debugPrint('$user added to $matchName');
     } catch (error) {
       debugPrint('Failed to add user to match: $error');
     }
@@ -42,35 +39,29 @@ class FirestoreController extends ChangeNotifier {
 
   // this method removes the user from the match
 
-  Future<bool> removeUserFromMatch(String matchName, User user) async {
+  Future<void> removeUserFromMatch(String matchName, User user) async {
     try {
       await instance.collection('matches').doc(matchName).update({
         'participants': FieldValue.arrayRemove([user.toMap()])
       });
       debugPrint('User removed from the Firestore');
-      return true;
     } catch (e) {
       debugPrint('Error removing user: $e');
-      return false;
     }
   }
 
   // this method removes the match from the Firestore database
 
-  Future<bool> removeMatch(String matchName) async {
+  Future<void> removeMatch(String matchName) async {
     try {
       await instance.collection('matches').doc(matchName).delete();
       debugPrint('$matchName deleted successfully');
-      return true;
     } catch (e) {
       debugPrint('Error deleting match: $e');
-      return false;
     }
   }
-
-  // this method changes the ready status of the user
-
-  Future<void> changeUserReady(matchName, user) async {
+// This method gets a list of participants in the match
+  Future<List<dynamic>?> getParticipants(matchName) async {
     try {
       DocumentReference matchRef =
           instance.collection('matches').doc(matchName);
@@ -83,23 +74,38 @@ class FirestoreController extends ChangeNotifier {
 
         if (matchData != null) {
           List<dynamic> participants = matchData['participants'];
-
-          int index = participants
-              .indexWhere((participant) => participant['id'] == user.id);
-
-          if (index != -1) {
-            participants[index]['ready'] = user.ready;
-
-            await matchRef.update({
-              'participants': participants,
-            });
-            print('Participant ready status updated succesfully');
-          } else {
-            print('No participant found');
-          }
+          return participants;
+        } else {
+          print('No participant found');
         }
       } else {
         print('Match document reference does not exist');
+      }
+    } catch (e) {
+      print('Error getting participants $e');
+    }
+    return null;
+  }
+
+  // this method changes the ready status of the user
+
+  Future<void> changeUserReady(matchName, user) async {
+    try {
+      DocumentReference matchRef =
+          instance.collection('matches').doc(matchName);
+
+      List<dynamic>? participants = await getParticipants(matchName);
+
+      if(participants!=null) {
+        int index = participants
+        .indexWhere((participant) => participant['id'] == user.id);
+        if (index != -1) {
+          participants[index]['ready'] = user.ready;
+          await matchRef.update({
+              'participants': participants,
+            });
+            print('Participant ready status updated succesfully');
+        }
       }
     } catch (e) {
       print('Error making participant ready: $e');
@@ -154,7 +160,28 @@ class FirestoreController extends ChangeNotifier {
     return false;
   }
 
-  // this method assigns the seeker role to a random user in the match
+  Future<bool?> checkAdminInMatch(matchName) async {
+    try {
+      List<dynamic>? participants = await getParticipants(matchName);
+
+      if(participants!=null) {
+        for(int i = 0; i < participants.length;i++) {
+          print(i);
+          if(participants[i]['userType']=='Admin') {
+            return true;
+          }
+        }
+        print('No admin in this lobby');
+      } else {
+        print('No participants found');
+      }
+    } catch (e) {
+      print('Error checking if the admin is in the match: $e');
+    }
+    return false;
+  }
+
+  //this method assigns the seeker role to a random user in the match
 
   Future<void> findRandomSeeker(String matchName) async {
     try {

@@ -15,10 +15,22 @@ class Lobby extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 95, 188, 255),
-      appBar: _buildAppBar(),
-      body: _buildBody(context),
+    final firestore = Provider.of<FirebaseFirestore>(context);
+    final firestoreController = FirestoreController(instance: firestore);
+
+    return PopScope(
+      onPopInvoked: (bool didPop) async {
+        if(didPop) {
+          await firestoreController.removeUserFromMatch(matchName, user);
+          await checkAdminInMatch(firestoreController, matchName);
+          return;
+        }
+      },
+      child: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 95, 188, 255),
+        appBar: _buildAppBar(),
+        body: _buildBody(context, firestore, firestoreController),
+      ),
     );
   }
 
@@ -36,20 +48,17 @@ class Lobby extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    final firestore = Provider.of<FirebaseFirestore>(context);
-    final firestoreController = FirestoreController(instance: firestore);
-
+  Widget _buildBody(BuildContext context, FirebaseFirestore firestore, FirestoreController firestoreController) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Expanded(child: _buildParticipantsList(context, firestore)),
+        Expanded(child: _buildParticipantsList(context, firestore, firestoreController)),
         _buildActionButton(context, firestoreController),
       ],
     );
   }
 
-  Widget _buildParticipantsList(BuildContext context, FirebaseFirestore firestore) {
+  Widget _buildParticipantsList(BuildContext context, FirebaseFirestore firestore, FirestoreController firestoreController) {
     return StreamBuilder<DocumentSnapshot>(
       stream: firestore.collection('matches').doc(matchName).snapshots(),
       builder: (context, snapshot) {
@@ -64,8 +73,10 @@ class Lobby extends StatelessWidget {
         var participants = List<Map<String, dynamic>>.from(matchData['participants'] ?? []);
         if (participants.isEmpty) {
           return const Center(child: Text('No participants found'));
+        } else {
+          return _buildParticipantsListView(participants);
         }
-        return _buildParticipantsListView(participants);
+        
       },
     );
   }
@@ -106,6 +117,13 @@ class Lobby extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       );
+    }
+  }
+
+  Future<void> checkAdminInMatch(firestoreController, matchName) async {
+    bool isInMatch = await firestoreController.checkAdminInMatch(matchName);
+    if(!isInMatch) {
+      firestoreController.removeMatch(matchName);
     }
   }
 
