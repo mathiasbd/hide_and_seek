@@ -342,7 +342,7 @@ class FirestoreController extends ChangeNotifier {
   // this methods keeps the hiders that are outside the radius and removes the hiders that are inside the radius
 
   Future<void> catchHiders(String matchName) async {
-    double radius = 100000000; // Assuming this is the catch radius
+    double radius = 10; // Assuming this is the catch radius
     LatLng seekerLocation = await getSeekerLocation(matchName); // Get the seeker's location
     DocumentReference matchRef = instance.collection('matches').doc(matchName);
     DocumentSnapshot matchSnapshot = await matchRef.get();
