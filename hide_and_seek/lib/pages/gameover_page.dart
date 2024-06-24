@@ -11,6 +11,7 @@ class GameoverPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 188, 255),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Game Over'),
         centerTitle: true,
         titleTextStyle: const TextStyle(
@@ -31,11 +32,6 @@ class GameoverPage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           },
-          backgroundColor: Colors.blue,
-          textStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
-          width: 250.0,
-          height: 60.0,
-          borderRadius: 12.0,
         ),
       ),
     );
