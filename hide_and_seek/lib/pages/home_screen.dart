@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_and_seek/pages/create_match.dart';
-import 'package:hide_and_seek/firebase/firestore_controller.dart';
 import 'package:hide_and_seek/pages/join_match.dart';
 import '../classes/User.dart';
 import '../custom_widgets.dart'; // Ensure this import is correct
@@ -14,9 +11,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context);
-    FirestoreController firestoreController = FirestoreController(instance: firestore);
-
     void handleNavigation(String role) {
       if (_formKey.currentState!.validate()) {
         String name = myController.text;

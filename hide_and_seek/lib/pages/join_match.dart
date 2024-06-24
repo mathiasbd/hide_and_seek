@@ -55,7 +55,6 @@ Widget build(BuildContext context) {
 Widget _buildMatchItem(BuildContext context, QueryDocumentSnapshot<Object?> match, FirestoreController firestoreController) {
   var matchData = match.data() as Map<String, dynamic>;
   String matchName = matchData['Match Name'] ?? 'Unknown Match';
-  String matchId = match.id;
 
   // Assuming FirestoreController has a method getNumberOfPlayers(matchId) that returns Future<int>
   Future<int> numberOfPlayers = firestoreController.getNumberOfPlayers(matchName);
